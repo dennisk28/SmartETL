@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2015 sp2 (http://www.altova.com) by Dennis (Webfly) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jxb="http://java.sun.com/xml/ns/jaxb" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.1" jxb:version="1.0">
+	<xs:element name="job">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+			<xs:appinfo>
+				<jxb:class name="XMLJob"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string"/>
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="property">
+						<xs:complexType>
+							<xs:attribute name="name" type="xs:string"/>
+							<xs:attribute name="value" type="xs:string"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:sequence maxOccurs="unbounded">
+					<xs:element name="step"/>
+				</xs:sequence>
+				<xs:sequence maxOccurs="unbounded">
+					<xs:element name="flow">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="from" type="xs:string"/>
+								<xs:element name="to" type="xs:string"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="datadef" type="datadef"/>
+				</xs:sequence>
+				<xs:element name="lookups"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="datadef">
+		<xs:annotation>
+			<xs:appinfo>
+				<jxb:class name="XMLDataDef"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element name="field">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="name" type="xs:string"/>
+							<xs:element name="type" type="xs:string"/>
+							<xs:element name="length" type="xs:int"/>
+							<xs:element name="format" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:element name="excludes" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="field" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="parent" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="lookup">
+		<xs:annotation>
+			<xs:appinfo>
+				<jxb:class name="XMLLookup"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="datadef" type="datadef"/>
+			<xs:element name="inmemory" type="xs:boolean"/>
+			<xs:element name="sourcetype" type="xs:string"/>
+			<xs:element name="database" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="type"/>
+						<xs:element name="url"/>
+						<xs:element name="user"/>
+						<xs:element name="password"/>
+						<xs:element name="sql"/>
+						<xs:element name="loadall"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="file" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="path"/>
+						<xs:element name="delimiter"/>
+						<xs:element name="quote"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="keys">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="field"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="values">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="field"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StepDef">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="debug" type="xs:boolean"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SmartTransStepDef">
+		<xs:complexContent>
+			<xs:extension base="StepDef">
+				<xs:sequence>
+					<xs:element name="currenttag" minOccurs="0"/>
+					<xs:element name="datadef" type="datadef"/>
+					<xs:element name="variables" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="variable">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="name" type="xs:string"/>
+											<xs:element name="formula" type="xs:string"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="mappings">
+						<xs:complexType>
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="mapping">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="field" type="xs:string"/>
+											<xs:sequence maxOccurs="unbounded">
+												<xs:element name="formula">
+													<xs:complexType>
+														<xs:attribute name="tag" type="xs:string"/>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="filter" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="formula">
+									<xs:complexType>
+										<xs:attribute name="tag" type="xs:string"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="externalprocess">
+						<xs:complexType>
+							<xs:attribute name="class" type="xs:string"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="validator"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="JoinStepDef">
+		<xs:complexContent>
+			<xs:extension base="StepDef">
+				<xs:sequence>
+					<xs:element name="jointype"/>
+					<xs:element name="leftStep">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="name"/>
+								<xs:element name="keys">
+									<xs:complexType>
+										<xs:sequence maxOccurs="unbounded">
+											<xs:element name="field"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="rightStep">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="name"/>
+								<xs:element name="keys">
+									<xs:complexType>
+										<xs:sequence maxOccurs="unbounded">
+											<xs:element name="field"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

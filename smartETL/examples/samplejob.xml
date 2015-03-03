@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2015 sp2 (http://www.altova.com) by Dennis (Webfly) -->
+<job xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Work/workspace/incredible/smartETL/src/main/resources/job.xsd">
+	<name/>
+	<step>
+		<name>step1-CSVInput</name>
+		<type>CSVInputStep</type>
+		<file>C:\Work\workspace\incredible\smartETL\examples\customers1.txt</file>
+		<title>true</title>
+		<delimiter>;</delimiter>
+		<quote></quote>
+		<datadef ref="customer"/>
+	</step>
+	<step>
+		<name>step2-Dummy</name>
+		<type>DummyStep</type>
+		<debug>true</debug>
+	</step>
+	<step>
+		<name>step3-CSVOutputSep</name>
+		<type>CSVOutputStep</type>
+		<file>C:\Work\workspace\incredible\smartETL\examples\outputcustomers.txt</file>
+		<title>true</title>
+		<delimiter>;</delimiter>
+		<quote>"</quote>
+		<datadef ref="outputcustomer"/>
+	</step>
+	<step>
+		<name>step 4-smart trans step</name>
+		<type>SmartTransStep</type>
+		<datadef ref="outputcustomer"/>
+		<currenttag>HK</currenttag>
+		<variables>
+			<variable>
+				<name>v1</name>
+				<formula>[firstname]</formula>
+			</variable>
+			<variable>
+				<name>v2</name>
+				<formula>"A"</formula>
+			</variable>
+		</variables>
+		<mappings>
+			<mapping>
+				<field>id</field>
+				<formula>[id]</formula>/>
+			</mapping>
+			<mapping>
+				<field>name</field>
+				<formula>[firstname]</formula>/>
+				<formula tag="HK">if([firstname]="ayl-firstname";"aa";"bb")</formula>
+			</mapping>
+			<mapping>
+				<field>newfld</field>
+				<formula>if(left([name];1)="p";"aa";[firstname])</formula>
+			</mapping>
+			<mapping>
+				<field>lkfld</field>
+				<formula>nullempty(dlookup("testlookup";"city";[id];[name]))</formula>
+				<!--formula>if(left([name];1)&lt;&gt;"h";dlookup("testlookup";"city";[firstname];[name])&amp;"-mytest";"not h name")</formula-->
+			</mapping>
+			<!--mapping>
+				<field>lkfld</field>
+				<formula>lookup("lookupdata"; [lookupdata.id]=[id]; [lookupdata.name])</formula>
+			</mapping-->
+		</mappings>
+	</step>
+	<flow>
+		<from>step1-CSVInput</from>
+		<to>step 4-smart trans step</to>
+	</flow>
+	<flow>
+		<from>step 4-smart trans step</from>
+		<to>step3-CSVOutputSep</to>
+	</flow>
+	<datadef>
+		<name>customer</name>
+		<field>
+			<name>id</name>
+			<type>Integer</type>
+			<length>3</length>
+		</field>
+		<field>
+			<name>name</name>
+			<type>String</type>
+			<length>10</length>
+		</field>
+		<field>
+			<name>firstname</name>
+			<type>String</type>
+			<length>13</length>
+		</field>
+		<field>
+			<name>zip</name>
+			<type>Integer</type>
+			<length>5</length>
+		</field>
+		<field>
+			<name>city</name>
+			<type>String</type>
+			<length>8</length>
+		</field>
+		<field>
+			<name>birthdate</name>
+			<type>Date</type>
+			<length>10</length>
+			<format>yyyy/mm/dd</format>
+		</field>
+		<field>
+			<name>street</name>
+			<type>String</type>
+			<length>11</length>
+		</field>
+		<field>
+			<name>housenr</name>
+			<type>Integer</type>
+			<length>3</length>
+		</field>
+		<field>
+			<name>stateCode</name>
+			<type>String</type>
+			<length>9</length>
+		</field>
+		<field>
+			<name>state</name>
+			<type>String</type>
+			<length>30</length>
+		</field>
+	</datadef>
+	<datadef parent="customer">
+		<name>outputcustomer</name>
+		<field>
+			<name>newfld</name>
+			<type>String</type>
+			<length>9</length>
+		</field>
+		<field>
+			<name>lkfld</name>
+			<type>Integer</type>
+			<length>9</length>
+		</field>
+		<excludes>
+			<field>stateCode</field>
+		</excludes>
+	</datadef>
+	<lookups>
+		<lookup>
+			<name>testlookup</name>
+			<datadef ref="customer"/>
+			<sourcetype>file</sourcetype>
+			<file>
+				<path>C:\Work\workspace\incredible\smartETL\examples\customers1.txt</path>
+				<delimiter>;</delimiter>
+				<quote/>
+			</file>
+			<keys>
+				<field>id</field>
+				<field>name</field>
+			</keys>
+			<values>
+				<field>firstname</field>
+				<field>city</field>
+			</values>
+		</lookup>
+	</lookups>
+</job>
