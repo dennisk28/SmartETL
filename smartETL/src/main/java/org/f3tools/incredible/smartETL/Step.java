@@ -2,7 +2,7 @@ package org.f3tools.incredible.smartETL;
 
 import java.util.List;
 
-import org.f3tools.incredible.utilities.ETLException;
+import org.f3tools.incredible.smartETL.utilities.ETLException;
 
 public interface Step 
 {	

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.f3tools.incredible.smartETL.utilities.ETLException;
+import org.f3tools.incredible.smartETL.utilities.IndexedList;
 import org.f3tools.incredible.smartETL.xml.XMLDataDef;
-import org.f3tools.incredible.utilities.ETLException;
-import org.f3tools.incredible.utilities.IndexedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +25,7 @@ public class DataDef
 	
 	public DataDef(XMLDataDef xmlDataDef)
 	{
-		this.localfields = new IndexedList<String, Field>();
-		this.excludedFields = new ArrayList<String>();
+		this();
 		
 		for (XMLDataDef.Field xmlFld : xmlDataDef.getField())
 		{
@@ -53,6 +52,18 @@ public class DataDef
 		
 		retrieveAllFields();		
 	}	
+	
+	public DataDef()
+	{
+		this.localfields = new IndexedList<String, Field>();
+		this.excludedFields = new ArrayList<String>();		
+	}
+	
+	public void copyDataDef(DataDef srcDataDef)
+	{
+		srcDataDef.copyFields(srcDataDef.getAllFields(), this.localfields);
+		retrieveAllFields();
+	}
 	
 	public String getParentName()
 	{
@@ -289,13 +300,23 @@ public class DataDef
             this.format = value;
         }
     }
-    
+
     public int compare(DataRow row1, DataRow row2, int[] fieldIdx1, int[] fieldIdx2) throws ETLException
     {
-    	int compare = 0;
-    	
     	Object[] rowData1 = row1.getRow();
     	Object[] rowData2 = row2.getRow();
+    	
+    	return compare(rowData1, rowData2, fieldIdx1, fieldIdx2);
+    }
+    
+    public int compare(Object[] rowData1, Object[] rowData2, int[] fieldIdx) throws ETLException
+    {
+    	return compare(rowData1, rowData2, fieldIdx, fieldIdx);
+    }
+
+    public int compare(Object[] rowData1, Object[] rowData2, int[] fieldIdx1, int[] fieldIdx2) throws ETLException
+    {
+    	int compare = 0;
     	
         for (int i = 0; i < fieldIdx1.length; i++)
         {

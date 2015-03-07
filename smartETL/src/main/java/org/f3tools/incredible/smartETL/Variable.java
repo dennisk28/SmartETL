@@ -4,7 +4,7 @@ public class Variable
 {
 	private String name;
 	private String formula;
-	private boolean calculated = false;
+	//private boolean calculated = false;
 	private Object value;
 	
 	public Object getValue() {

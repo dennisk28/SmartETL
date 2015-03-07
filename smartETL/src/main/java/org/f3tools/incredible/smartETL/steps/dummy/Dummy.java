@@ -1,9 +1,9 @@
 package org.f3tools.incredible.smartETL.steps.dummy;
 
+import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.f3tools.incredible.smartETL.AbstractStep;
 import org.f3tools.incredible.smartETL.DataRow;
 import org.f3tools.incredible.smartETL.Job;
-import org.f3tools.incredible.utilities.ETLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

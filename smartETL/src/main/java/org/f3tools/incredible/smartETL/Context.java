@@ -2,9 +2,9 @@ package org.f3tools.incredible.smartETL;
 
 import java.util.HashMap;
 
+import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.f3tools.incredible.smartETL.formula.ICFormula;
 import org.f3tools.incredible.smartETL.formula.ICFormulaContext;
-import org.f3tools.incredible.utilities.ETLException;
 
 
 /**

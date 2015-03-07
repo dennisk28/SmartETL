@@ -9,9 +9,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
+import org.f3tools.incredible.smartETL.utilities.XMLUtl;
 import org.f3tools.incredible.smartETL.xml.XMLDataDef;
 import org.f3tools.incredible.smartETL.xml.XMLJob;
-import org.f3tools.incredible.utilities.XMLUtl;
 
 public class JobDef 
 {

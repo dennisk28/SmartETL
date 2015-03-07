@@ -1,6 +1,6 @@
 package org.f3tools.incredible.smartETL.formula;
 
-import org.f3tools.incredible.utilities.ETLException;
+import org.f3tools.incredible.smartETL.utilities.ETLException;
 
 public class FormulaException extends ETLException
 {

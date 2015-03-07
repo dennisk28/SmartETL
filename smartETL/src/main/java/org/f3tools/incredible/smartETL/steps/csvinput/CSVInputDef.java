@@ -1,11 +1,10 @@
 package org.f3tools.incredible.smartETL.steps.csvinput;
 
 import org.w3c.dom.Node;
-
+import org.f3tools.incredible.smartETL.utilities.ETLException;
+import org.f3tools.incredible.smartETL.utilities.XMLUtl;
 import org.f3tools.incredible.smartETL.Const;
 import org.f3tools.incredible.smartETL.StepDef;
-import org.f3tools.incredible.utilities.ETLException;
-import org.f3tools.incredible.utilities.XMLUtl;
 
 public class CSVInputDef extends StepDef
 {

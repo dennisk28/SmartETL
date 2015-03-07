@@ -3,7 +3,7 @@ package org.f3tools.incredible.smartETL;
 import java.util.HashMap;
 import java.util.List;
 
-import org.f3tools.incredible.utilities.XMLUtl;
+import org.f3tools.incredible.smartETL.utilities.XMLUtl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;

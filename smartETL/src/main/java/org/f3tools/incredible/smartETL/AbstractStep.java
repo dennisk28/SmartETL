@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.f3tools.incredible.utilities.ETLException;
+import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +23,15 @@ public abstract class AbstractStep implements Step
     private AtomicBoolean stopped;
 	private AtomicBoolean paused;	
 	private boolean initialized = false;
-	private DataDef dataDef;
+	protected DataDef dataDef;
     
 	private Job job;
 	
+	public Job getJob()
+	{
+		return job;
+	}
+
 	public boolean isDebug() {
 		return debug;
 	}
@@ -272,6 +277,7 @@ public abstract class AbstractStep implements Step
 		if (row == null) return null;
 
 		dataRow.setRow(row);
+		dataRow.setDataDef(dataSet.getDataDef());
 
 		return dataRow;
 	}    

@@ -2,12 +2,11 @@ package org.f3tools.incredible.smartETL.utilities;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
+import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.f3tools.incredible.smartETL.DataDef;
-import org.f3tools.incredible.utilities.ETLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -219,6 +218,4 @@ public class CSVFile
         
         return vRow;
     }	
-	
-	
 }

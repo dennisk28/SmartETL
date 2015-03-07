@@ -1,4 +1,4 @@
-package org.f3tools.incredible.utilities;
+package org.f3tools.incredible.smartETL.utilities;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.f3tools.incredible.smartETL.utilities.XMLUtl;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;

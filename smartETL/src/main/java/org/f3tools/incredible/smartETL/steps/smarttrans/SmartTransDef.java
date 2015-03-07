@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Node;
-
+import org.f3tools.incredible.smartETL.utilities.ETLException;
+import org.f3tools.incredible.smartETL.utilities.Utl;
+import org.f3tools.incredible.smartETL.utilities.XMLUtl;
 import org.f3tools.incredible.smartETL.StepDef;
-import org.f3tools.incredible.utilities.ETLException;
-import org.f3tools.incredible.utilities.Utl;
-import org.f3tools.incredible.utilities.XMLUtl;
 
 public class SmartTransDef extends StepDef
 {

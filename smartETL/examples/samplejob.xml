@@ -8,9 +8,37 @@
 		<file>C:\Work\workspace\incredible\smartETL\examples\customers1.txt</file>
 		<title>true</title>
 		<delimiter>;</delimiter>
-		<quote></quote>
+		<quote/>
 		<datadef ref="customer"/>
 	</step>
+	<step>
+		<name>step6-CSVInput</name>
+		<type>CSVInputStep</type>
+		<file>C:\Work\workspace\incredible\smartETL\examples\state.txt</file>
+		<title>true</title>
+		<delimiter>;</delimiter>
+		<quote/>
+		<datadef ref="state"/>
+	</step>
+	<!--step>
+		<name>step5-Join</name>
+		<type>JoinStep</type>
+		<jointype>INNER</jointype>
+		<leftstep>
+			<name>step1-CSVInput</name>
+			<keys>
+				<field>zip</field>
+				<field>stateCode</field>
+			</keys>
+		</leftstep>
+		<rightstep>
+			<name>step6-CSVInput</name>
+			<keys>
+				<field>zip</field>
+				<field>stateCode</field>
+			</keys>
+		</rightstep>
+	</step-->
 	<step>
 		<name>step2-Dummy</name>
 		<type>DummyStep</type>
@@ -65,14 +93,58 @@
 			</mapping-->
 		</mappings>
 	</step>
+	<step>
+		<name>step7-sort</name>
+		<type>SortStep</type>
+		<tempdirectory>C:\Work\workspace\incredible\smartETL\examples\temp</tempdirectory>
+		<prefix>sort_</prefix>
+		<sortsize>200</sortsize>
+		<compress>true</compress>
+		<uniquerows>false</uniquerows>
+		<fields>
+			<field>
+				<name>zip</name>
+				<ascending>true</ascending>
+				<casesensitive>true</casesensitive>
+				<presorted>false</presorted>
+			</field>
+			<field>
+				<name>city</name>
+				<ascending>true</ascending>
+				<casesensitive>true</casesensitive>
+				<presorted>false</presorted>
+			</field>		
+		</fields>
+	</step>
 	<flow>
 		<from>step1-CSVInput</from>
-		<to>step 4-smart trans step</to>
+		<to>step7-sort</to>
+	</flow>
+	<flow>
+		<from>step7-sort</from>
+		<to>step3-CSVOutputSep</to>
+	</flow>
+	<!--flow>
+		<from>step1-CSVInput</from>
+		<to>step5-Join</to>
+	</flow>
+	<flow>
+		<from>step6-CSVInput</from>
+		<to>step5-Join</to>
+	</flow>
+	<flow>
+		<from>step5-Join</from>
+		<to>step3-CSVOutputSep</to>
+	</flow-->
+
+	<!--flow>
+		<from>step1-CSVInput</from>
+		<to>step 5-smart trans step</to>
 	</flow>
 	<flow>
 		<from>step 4-smart trans step</from>
 		<to>step3-CSVOutputSep</to>
-	</flow>
+	</flow-->
 	<datadef>
 		<name>customer</name>
 		<field>
@@ -127,6 +199,24 @@
 			<length>30</length>
 		</field>
 	</datadef>
+	<datadef>
+		<name>state</name>
+		<field>
+			<name>zip</name>
+			<type>Integer</type>
+			<length>5</length>
+		</field>
+		<field>
+			<name>stateCode</name>
+			<type>String</type>
+			<length>9</length>
+		</field>
+		<field>
+			<name>population</name>
+			<type>Integer</type>
+			<length>8</length>
+		</field>
+	</datadef>
 	<datadef parent="customer">
 		<name>outputcustomer</name>
 		<field>
@@ -136,6 +226,11 @@
 		</field>
 		<field>
 			<name>lkfld</name>
+			<type>Integer</type>
+			<length>9</length>
+		</field>
+		<field>
+			<name>population</name>
 			<type>Integer</type>
 			<length>9</length>
 		</field>

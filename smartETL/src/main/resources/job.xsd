@@ -190,7 +190,7 @@
 			<xs:extension base="StepDef">
 				<xs:sequence>
 					<xs:element name="jointype"/>
-					<xs:element name="leftStep">
+					<xs:element name="leftstep">
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="name"/>
@@ -204,7 +204,7 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
-					<xs:element name="rightStep">
+					<xs:element name="rightstep">
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="name"/>
@@ -212,6 +212,36 @@
 									<xs:complexType>
 										<xs:sequence maxOccurs="unbounded">
 											<xs:element name="field"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SortStepDef">
+		<xs:complexContent>
+			<xs:extension base="StepDef">
+				<xs:sequence>
+					<xs:element name="tempdirectory" type="xs:string"/>
+					<xs:element name="prefix" type="xs:string"/>
+					<xs:element name="sortsize" type="xs:int"/>
+					<xs:element name="freememory" type="xs:int"/>
+					<xs:element name="compress" type="xs:boolean"/>
+					<xs:element name="uniquerows" type="xs:boolean"/>
+					<xs:element name="fields">
+						<xs:complexType>
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="field">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="name" type="xs:string"/>
+											<xs:element name="ascending" type="xs:boolean"/>
+											<xs:element name="casesensitive" type="xs:boolean"/>
+											<xs:element name="presorted" type="xs:boolean"/>
 										</xs:sequence>
 									</xs:complexType>
 								</xs:element>

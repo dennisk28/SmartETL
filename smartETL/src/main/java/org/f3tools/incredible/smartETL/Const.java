@@ -39,6 +39,7 @@ public class Const {
 		int retval;
 		try
 		{
+			if (str == null) return def;
 			retval = Integer.parseInt(str);
 		} catch (Exception e)
 		{
@@ -49,6 +50,8 @@ public class Const {
 	
 	public static final boolean toBoolean(String str)
 	{
+		if (str == null) return false;
+		
 		if (str.equalsIgnoreCase("true"))
 			return true;
 		else

@@ -18,6 +18,11 @@ public class Job {
 	private AtomicBoolean paused;	
 	private Context context;
 	
+	public LinkedHashMap<String, Step> getSteps()
+	{
+		return steps;
+	}
+
 	public boolean execute(String[] parameters)
 	{
 		if (!init(parameters[0]))

@@ -1,26 +1,23 @@
 package org.f3tools.incredible.smartETL.steps.join;
 
-import org.f3tools.incredible.smartETL.Const;
+import java.util.List;
+
+import org.f3tools.incredible.smartETL.utilities.ETLException;
+import org.f3tools.incredible.smartETL.utilities.XMLUtl;
 import org.f3tools.incredible.smartETL.StepDef;
-import org.f3tools.incredible.utilities.ETLException;
-import org.f3tools.incredible.utilities.XMLUtl;
 import org.w3c.dom.Node;
 
 public class JoinDef extends StepDef
 {
+	public static final String[] JOIN_TYPES = {"INNER", "LEFT OUTER", "RIGHT OUTER", "FULL OUTER"}; 
+	public static final boolean[] LEFT_OPTIONALS = {false, false, true, true};
+	public static final boolean[] RIGHT_OPTIONALS = {false, true, false, true};
 
-
-	private String file;
-	private String delimiter;
-	private String dataDefRef;
-	private String quote;
-	
     private String[] leftKeys;;
 	private String[] rightKeys;	
 	private String leftStepName;
 	private String rightStepName;
 	private String joinType;
-	
 	
 	public String getJoinType()
 	{
@@ -72,61 +69,52 @@ public class JoinDef extends StepDef
 		this.rightStepName = rightStepName;
 	}
 
-	public String getDataDefRef() {
-		return dataDefRef;
-	}
-
-	private boolean hasTitle;
-	
-	public boolean hasTitle()
-	{
-		return this.hasTitle;
-	}
-	
-	public String getFile() 
-	{
-		return file;
-	}
-
-	public void setFile(String file) {
-		this.file = file;
-	}
-
-	public String getDelimiter() {
-		return delimiter;
-	}
-
-	public void setDelimiter(String delimiter) {
-		this.delimiter = delimiter;
-	}
-
 
 	public JoinDef(Node defNode) throws ETLException
 	{
 		super(defNode);
 		
-		this.file = XMLUtl.getTagValue(defNode, "file");
-		this.delimiter = XMLUtl.getTagValue(defNode, "delimiter");
-		this.quote = XMLUtl.getTagValue(defNode,  "quote");
+		this.joinType = XMLUtl.getTagValue(defNode, "jointype");
 		
-		String hasTitle = XMLUtl.getTagValue(defNode, "title");
+		Node leftNode = XMLUtl.getSubNode(defNode, "leftStep");
+		Node rightNode = XMLUtl.getSubNode(defNode, "rightStep");
 		
-		if (hasTitle != null)
+		if (leftNode == null || rightNode == null) 
+			throw new ETLException("Both left and right step shall be defined.");
+		
+		this.leftStepName = XMLUtl.getTagValue(leftNode, "name");
+		this.rightStepName = XMLUtl.getTagValue(rightNode, "name");
+		
+		if (leftStepName == null || rightStepName == null) 
+			throw new ETLException("Both left and right step names shall be defined");
+		
+		Node leftKeysNode = XMLUtl.getSubNode(leftNode, "keys");
+		Node rightKeysNode = XMLUtl.getSubNode(rightNode,  "keys");
+		
+		if (leftKeysNode == null || rightKeysNode == null)
+			throw new ETLException("Both left and right step shall have keys defined");
+		
+		List<Node> leftFields = XMLUtl.getNodes(leftKeysNode, "field");
+		List<Node> rightFields = XMLUtl.getNodes(rightKeysNode, "field");
+		
+		if ((leftFields == null || leftFields.size() == 0)
+				|| (rightFields == null || rightFields.size() == 0))
+			throw new ETLException("Both left and right keys shall have field defined");
+		
+		leftKeys = new String[leftFields.size()];
+		
+		for (int i = 0, size = leftFields.size(); i < size; i++)
 		{
-			this.hasTitle = Const.toBoolean(hasTitle);
+			Node node = leftFields.get(i);
+			leftKeys[i] = XMLUtl.getNodeValue(node);
 		}
-		
-		this.dataDefRef = XMLUtl.getTagValueWithAttribute(defNode, "datadef", "ref");
-		
-		if (this.dataDefRef == null)
-		{
-			throw new ETLException("No data def found for CSVInput Step " + this.getName());
-		}
-	}
 
-	public String getQuote()
-	{
-		return quote;
+		rightKeys = new String[rightFields.size()];
+		
+		for (int i = 0, size = rightFields.size(); i < size; i++)
+		{
+			Node node = rightFields.get(i);
+			rightKeys[i] = XMLUtl.getNodeValue(node);
+		}
 	}
-	
 }
