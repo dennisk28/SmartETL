@@ -9,6 +9,7 @@
   <modules>
     <module>libbase</module>
     <module>libformula</module>
-    <module>smartETL</module>  
+    <module>smartETL</module>
+    <module>distribution</module>  
   </modules>
 </project>

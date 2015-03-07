@@ -1,0 +1,51 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>org.f3tools.incredible</groupId>
+        <artifactId>incredible</artifactId>
+        <version>0.0.1</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>SmartETL</artifactId>
+    <description>Create tarball for whole project</description>
+    <packaging>pom</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <skipAssembly>${enableAssembly}</skipAssembly>
+                    <filters>
+                        <!--you can put properties file here if you need filter your configuration file -->
+                    </filters>
+                    <descriptors>
+                        <descriptor>src/main/assembly/distributionDefault.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>true</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+  <dependencies>
+    <dependency>
+	  	<groupId>org.f3tools.incredible</groupId>
+  		<artifactId>smartETL</artifactId>
+  		<version>0.0.1</version>  
+    </dependency>
+  </dependencies>
+</project>

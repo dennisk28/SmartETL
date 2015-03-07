@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    <id>incredible</id>
+    <formats>
+        <format>zip</format>
+		<format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+    <fileSet>
+          <fileMode>0750</fileMode>
+            <directory>src/main/scripts</directory> 
+
+            <outputDirectory>bin</outputDirectory>
+
+            <!-- Executable script files -->
+            <includes>
+                <include>*</include>
+            </includes>
+            <filtered>true</filtered>
+            <!-- remove carriage return or Ctrl-M characters -->
+            <lineEnding>dos</lineEnding>
+    </fileSet>     
+    <fileSet>
+          <fileMode>0750</fileMode>
+            <directory>../examples</directory> 
+            <outputDirectory>examples</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+            <filtered>true</filtered>
+            <lineEnding>dos</lineEnding>
+    </fileSet>     
+    </fileSets>
+
+    <dependencySets>
+        <!-- Market risk related module -->
+        <dependencySet>
+            <fileMode>640</fileMode>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+            <!--includes>
+                <include>org.f3tools.incredible:*</include>
+            </includes-->
+        </dependencySet>
+         <!---->
+        <!-- Third party -->
+        <!-- dependencySet>
+            <fileMode>640</fileMode>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+            <excludes>
+                <exclude>org.f3tools.incredible:*</exclude>
+            </excludes>
+        </dependencySet-->
+   
+    </dependencySets>
+
+</assembly>
