@@ -20,25 +20,25 @@
 		<quote/>
 		<datadef ref="state"/>
 	</step>
-	<!--step>
+	<step>
 		<name>step5-Join</name>
 		<type>JoinStep</type>
-		<jointype>INNER</jointype>
+		<jointype>RIGHT OUTER</jointype>
 		<leftstep>
-			<name>step1-CSVInput</name>
+			<name>step7-sort</name>
 			<keys>
 				<field>zip</field>
 				<field>stateCode</field>
 			</keys>
 		</leftstep>
 		<rightstep>
-			<name>step6-CSVInput</name>
+			<name>step71-sort</name>
 			<keys>
 				<field>zip</field>
 				<field>stateCode</field>
 			</keys>
 		</rightstep>
-	</step-->
+	</step>
 	<step>
 		<name>step2-Dummy</name>
 		<type>DummyStep</type>
@@ -51,7 +51,7 @@
 		<title>true</title>
 		<delimiter>;</delimiter>
 		<quote></quote>
-		<datadef ref="outputcustomer"/>
+		<!-- datadef ref="outputcustomer"/-->
 	</step>
 	<step>
 		<name>step 4-smart trans step</name>
@@ -109,7 +109,30 @@
 				<presorted>false</presorted>
 			</field>
 			<field>
-				<name>city</name>
+				<name>stateCode</name>
+				<ascending>true</ascending>
+				<casesensitive>true</casesensitive>
+				<presorted>false</presorted>
+			</field>		
+		</fields>
+	</step>
+	<step>
+		<name>step71-sort</name>
+		<type>SortStep</type>
+		<tempdirectory>C:\Work\workspace\smartETLTest\temp</tempdirectory>
+		<prefix>sort_</prefix>
+		<sortsize>200</sortsize>
+		<compress>true</compress>
+		<uniquerows>false</uniquerows>
+		<fields>
+			<field>
+				<name>zip</name>
+				<ascending>true</ascending>
+				<casesensitive>true</casesensitive>
+				<presorted>false</presorted>
+			</field>
+			<field>
+				<name>stateCode</name>
 				<ascending>true</ascending>
 				<casesensitive>true</casesensitive>
 				<presorted>false</presorted>
@@ -120,10 +143,27 @@
 		<from>step1-CSVInput</from>
 		<to>step7-sort</to>
 	</flow>
-	<flow>
+	<!-- flow>
 		<from>step7-sort</from>
 		<to>step3-CSVOutputSep</to>
+	</flow-->
+	<flow>
+		<from>step6-CSVInput</from>
+		<to>step71-sort</to>
 	</flow>
+	<flow>
+		<from>step7-sort</from>
+		<to>step5-Join</to>
+	</flow>
+	<flow>
+		<from>step71-sort</from>
+		<to>step5-Join</to>
+	</flow>
+	<flow>
+		<from>step5-Join</from>
+		<to>step3-CSVOutputSep</to>
+	</flow>
+	
 	<!--flow>
 		<from>step1-CSVInput</from>
 		<to>step5-Join</to>
