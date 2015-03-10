@@ -74,6 +74,25 @@ public class DataDef
 		return parent;
 	}
 
+	public void removeField(String fieldName)
+	{
+		if (this.excludedFields.indexOf(fieldName) < 0)
+		{
+			excludedFields.add(fieldName);
+		}
+		
+		retrieveAllFields();
+	}
+	
+	public void removeField(int fieldIndex)
+	{
+		Field field = allFields.get(fieldIndex);
+		
+		if (field == null) return;
+		
+		removeField(field.getName());
+	}	
+	
 	private void copyFields(IndexedList<String, Field> src, IndexedList<String, Field> dest)
 	{
 		for (int i = 0, size = src.size(); i < size; i++)
