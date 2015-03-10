@@ -1,6 +1,8 @@
 package org.f3tools.incredible.smartETL.steps.join;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +14,16 @@ import org.f3tools.incredible.smartETL.DataSet;
 import org.f3tools.incredible.smartETL.Job;
 import org.f3tools.incredible.smartETL.Step;
 
+/**
+ * Join two input dataset based on keys. 
+ * Join types:
+ * inner: only left side key fields will be preserved
+ * left outer: only left side key fields will be preserved
+ * right outer: only right side key fields will be preserved
+ * @author Desheng Kang
+ * @since 2015/03/08
+ *
+ */
 public class Join extends AbstractStep
 {
 	private JoinDef joinDef;
@@ -28,7 +40,9 @@ public class Join extends AbstractStep
 	private List<DataRow> leftRows;
 	private List<DataRow> rightRows;
 	private DataDef outputDataDef;
-
+	private int[] leftExcludedIdx;
+	private int [] rightExcludedIdx;
+	
 	private boolean first = true;
 
 	public JoinDef getJoinDef()
@@ -93,10 +107,6 @@ public class Join extends AbstractStep
 			leftRow = getRowFrom(leftDataSet);
 			rightRow = getRowFrom(rightDataSet);
 
-			outputDataDef = new DataDef();
-			outputDataDef.copyDataDef(leftRow.getDataDef());
-			outputDataDef.copyDataDef(rightRow.getDataDef());
-
 			if (leftRow != null)
 			{
 				// Find the key indexes:
@@ -123,6 +133,46 @@ public class Join extends AbstractStep
 						throw new ETLException("can't find key " + joinDef.getRightKeys()[i]);
 					}
 				}
+			}
+
+			outputDataDef = new DataDef();
+			
+			// remove key fields
+			if (joinDef.getJoinType().equalsIgnoreCase("INNER") 
+					|| joinDef.getJoinType().equalsIgnoreCase("LEFT OUTER"))
+			{
+				rightExcludedIdx = Arrays.copyOf(rightKeyIdx, rightKeyIdx.length);
+				Arrays.sort(rightExcludedIdx);
+				leftExcludedIdx = new int[0];
+
+				outputDataDef.copyDataDef(leftRow.getDataDef());
+				
+				DataDef newRightDataDef = new DataDef();
+				newRightDataDef.copyDataDef(rightRow.getDataDef());
+				
+				for (int i = rightExcludedIdx.length - 1; i >= 0; i--)
+				{
+					newRightDataDef.removeField(rightExcludedIdx[i]);
+				}
+				
+				outputDataDef.copyDataDef(newRightDataDef);
+			}
+			else
+			{
+				leftExcludedIdx = Arrays.copyOf(leftKeyIdx, leftKeyIdx.length);
+				Arrays.sort(leftExcludedIdx);
+				rightExcludedIdx = new int[0];
+
+				DataDef newLeftDataDef = new DataDef();
+				newLeftDataDef.copyDataDef(leftRow.getDataDef());
+				
+				for (int i = leftExcludedIdx.length - 1; i >= 0; i--)
+				{
+					newLeftDataDef.removeField(leftExcludedIdx[i]);
+				}
+				
+				outputDataDef.copyDataDef(newLeftDataDef);
+				outputDataDef.copyDataDef(rightRow.getDataDef());
 			}
 		}
 
@@ -394,13 +444,75 @@ public class Join extends AbstractStep
 
 		int count = outDataDef.getFieldCount();
 		Object[] rowData = new Object[count];
+		int leftCount = 0;
 
-		if (leftRow != null) System.arraycopy(leftRow.getRow(), 0, rowData, 0, leftRow.getRow().length);
+		if (leftRow != null) 
+		{
+			Object[] leftData = leftRow.getRow();
+			leftCount = leftData.length;
+			
+			if (this.leftExcludedIdx.length > 0)
+			{
+				int pos = 0;
+				int destPos = 0;
+				int len = 0;
+				
+				for (int i = 0; i < leftExcludedIdx.length; i++)
+				{
+					int endPos = leftExcludedIdx[i];
+					len = endPos - pos;
+					
+					if (len > 0)
+					{
+						System.arraycopy(leftData, pos, rowData, destPos, len);
+						destPos += len;
+					}
+					
+					pos = endPos + 1;
+				}
+				
+				if (pos < leftCount)
+				{
+					len = leftCount - pos;
+					System.arraycopy(leftData, pos, rowData, destPos, len);
+				}
+			}
+			else
+				System.arraycopy(leftData, 0, rowData, 0, leftCount);
+		}
 
 		if (rightRow != null)
 		{
-			Object[] rightRowData = rightRow.getRow();
-			System.arraycopy(rightRowData, 0, rowData, count - rightRowData.length, rightRowData.length);
+			Object[] rightData = rightRow.getRow();
+			
+			if (this.rightExcludedIdx.length > 0)
+			{
+				int pos = 0;
+				int destPos = leftCount;
+				int len = 0;
+				
+				for (int i = 0; i < rightExcludedIdx.length; i++)
+				{
+					int endPos = rightExcludedIdx[i];
+					len = endPos - pos;
+					
+					if (len > 0)
+					{
+						System.arraycopy(rightData, pos, rowData, destPos, len);
+						destPos += len;
+					}
+					
+					pos = endPos + 1;
+				}
+				
+				if (pos < rightData.length)
+				{
+					len = rightData.length - pos;
+					System.arraycopy(rightData, pos, rowData, destPos, len);
+				}	
+			}
+			else
+				System.arraycopy(rightData, 0, rowData, count - rightData.length, rightData.length);
 		}
 
 		DataRow row = new DataRow();
