@@ -59,7 +59,7 @@ public class CSVInputDef extends StepDef
 		
 		this.dataDefRef = XMLUtl.getTagValueWithAttribute(defNode, "datadef", "ref");
 		
-		if (this.dataDefRef == null)
+		if (this.dataDefRef == null && this.getClass().getName().equalsIgnoreCase("CSVInputDef"))
 		{
 			throw new ETLException("No data def found for CSVInput Step " + this.getName());
 		}
