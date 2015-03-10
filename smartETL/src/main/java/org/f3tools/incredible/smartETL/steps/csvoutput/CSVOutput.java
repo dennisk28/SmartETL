@@ -14,6 +14,13 @@ import org.f3tools.incredible.smartETL.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This step receives data and save it to CSV output file. If DataDef reference is
+ * not defined, the input data DataDef will be used. 
+ * @author Dennis
+ *
+ */
+
 public class CSVOutput extends AbstractStep
 {
 	private Logger logger = LoggerFactory.getLogger(CSVOutput.class);
@@ -44,11 +51,14 @@ public class CSVOutput extends AbstractStep
 			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.csvOutputDef.getFile())), 
 				5000);
 			
-			this.dataDef = DataDefRegistry.getInstance().findDataDef(csvOutputDef.getDataDefRef());
-			
-			if (this.dataDef == null)
+			if (csvOutputDef.getDataDefRef() != null)
 			{
-				throw new ETLException("Can't find data def " + csvOutputDef.getDataDefRef());
+				this.dataDef = DataDefRegistry.getInstance().findDataDef(csvOutputDef.getDataDefRef());
+				
+				if (this.dataDef == null)
+				{
+					throw new ETLException("Can't find data def " + csvOutputDef.getDataDefRef());
+				}
 			}
 		}
 		catch (Exception e)
@@ -77,6 +87,7 @@ public class CSVOutput extends AbstractStep
 		{
 			if (firstRow && this.csvOutputDef.hasTitle())
 			{
+				this.dataDef = r.getDataDef();
 				bw.write(this.printTitle(this.dataDef.getFieldNames(), this.csvOutputDef.getDelimiter(), this.csvOutputDef.getQuote()));
 				bw.write("\n");
 				firstRow = false;
