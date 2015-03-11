@@ -101,7 +101,7 @@ public class DefaultFormulaContext implements FormulaContext
     references.put(name, value);
   }
 
-  public Object resolveReference(final Object name)
+  public Object resolveReference(final Object name) throws EvaluationException
   {
     if (name == null)
     {
@@ -124,7 +124,7 @@ public class DefaultFormulaContext implements FormulaContext
     return functionRegistry;
   }
 
-  public Type resolveReferenceType(final Object name)
+  public Type resolveReferenceType(final Object name) throws EvaluationException
   {
     return AnyType.TYPE;
   }

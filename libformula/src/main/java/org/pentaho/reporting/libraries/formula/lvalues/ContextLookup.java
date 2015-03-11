@@ -17,7 +17,6 @@
 
 package org.pentaho.reporting.libraries.formula.lvalues;
 
-import org.pentaho.reporting.libraries.formula.LibFormulaErrorValue;
 import org.pentaho.reporting.libraries.formula.typing.Type;
 import org.pentaho.reporting.libraries.formula.typing.coretypes.ErrorType;
 import org.pentaho.reporting.libraries.formula.FormulaContext;
@@ -49,10 +48,13 @@ public class ContextLookup extends AbstractLValue
     final FormulaContext context = getContext();
     final Type type = context.resolveReferenceType(name);
     final Object value = context.resolveReference(name);
-    if (value == null)
+    
+    // Dennis 2015/03/11, if the name can't be resolved, throw out an exception,
+    // null value is allowed to return
+    /*if (value == null)
     {
       throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NA_VALUE);
-    }
+    }*/
     return new TypeValuePair(type, value);
   }
 

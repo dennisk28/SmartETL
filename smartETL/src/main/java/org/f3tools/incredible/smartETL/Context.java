@@ -5,6 +5,8 @@ import java.util.HashMap;
 import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.f3tools.incredible.smartETL.formula.ICFormula;
 import org.f3tools.incredible.smartETL.formula.ICFormulaContext;
+import org.pentaho.reporting.libraries.formula.EvaluationException;
+import org.pentaho.reporting.libraries.formula.LibFormulaErrorValue;
 
 
 /**
@@ -54,7 +56,7 @@ public class Context
 		}
 	}
 	
-	public Object resolveVariable(String varName)
+	public Object resolveVariable(String varName) throws EvaluationException
 	{
 		if (hasVariable(varName)) return this.getVariableValue(varName);
 		
@@ -64,7 +66,8 @@ public class Context
 		if (idx >= 0)
 			return this.currentInputRow.getFieldValue(idx);
 		else
-			return null;
+			//TODO shall throw a message "can't resolve the variable" 
+			throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NOTDEFINED_VALUE); 
 	}
 	
 	public boolean hasVariable(String varName)
