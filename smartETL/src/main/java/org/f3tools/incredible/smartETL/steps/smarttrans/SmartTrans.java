@@ -20,8 +20,8 @@ public class SmartTrans extends AbstractStep
 	private Logger logger = LoggerFactory.getLogger(SmartTrans.class);
 
 	private SmartTransDef smartTransDef;
-	private DataDef dataDef;
 	private HashMap<String, Variable> variables;
+	private DataDef outputDataDef;
 	
 	public void setSmartTransDef(SmartTransDef smartTransDef)
 	{
@@ -43,9 +43,9 @@ public class SmartTrans extends AbstractStep
 		try
 		{
 			this.variables = new HashMap<String, Variable>();
-			this.dataDef = DataDefRegistry.getInstance().findDataDef(smartTransDef.getDataDefRef());
+			this.outputDataDef = DataDefRegistry.getInstance().findDataDef(smartTransDef.getDataDefRef());
 			
-			Utl.check(this.dataDef == null, "Can't find data def " + smartTransDef.getDataDefRef());
+			Utl.check(this.outputDataDef == null, "Can't find data def " + smartTransDef.getDataDefRef());
 
 			for(SmartTransDef.VarDef varDef : this.smartTransDef.getVarDefs())
 			{
@@ -71,14 +71,14 @@ public class SmartTrans extends AbstractStep
 	 */
 	public DataRow map(DataRow inputRow) throws ETLException
 	{
-		DataRow outputRow = new DataRow(this.dataDef);
+		DataRow outputRow = new DataRow(this.outputDataDef);
 		this.getContext().setCurrentInputRow(inputRow);
 		
 		recalculateVariables();
 		
 		for (SmartTransDef.Mapping mapping : this.smartTransDef.getMappings())
 		{
-			int idx = this.dataDef.getFieldIndex(mapping.getField());
+			int idx = this.outputDataDef.getFieldIndex(mapping.getField());
 			
 			Utl.check(idx < 0, "Mapping field " + mapping.getField() + " does not exist in datadef");
 			
