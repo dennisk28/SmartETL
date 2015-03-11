@@ -23,7 +23,7 @@
 	<step>
 		<name>step5-Join</name>
 		<type>JoinStep</type>
-		<jointype>RIGHT OUTER</jointype>
+		<jointype>LEFT OUTER</jointype>
 		<leftstep>
 			<name>step7-sort</name>
 			<keys>
@@ -91,6 +91,10 @@
 				<field>lkfld</field>
 				<formula>lookup("lookupdata"; [lookupdata.id]=[id]; [lookupdata.name])</formula>
 			</mapping-->
+			<mapping>
+				<field>population</field>
+				<formula>[population]</formula>
+			</mapping>
 		</mappings>
 	</step>
 	<step>
@@ -139,14 +143,20 @@
 			</field>		
 		</fields>
 	</step>
+
+	<!-- flow>
+		<from>step1-CSVInput</from>
+		<to>step 4-smart trans step</to>
+	</flow>
+	<flow>
+		<from>step 4-smart trans step</from>
+		<to>step3-CSVOutputSep</to>
+	</flow-->
+
 	<flow>
 		<from>step1-CSVInput</from>
 		<to>step7-sort</to>
 	</flow>
-	<!-- flow>
-		<from>step7-sort</from>
-		<to>step3-CSVOutputSep</to>
-	</flow-->
 	<flow>
 		<from>step6-CSVInput</from>
 		<to>step71-sort</to>
@@ -160,10 +170,15 @@
 		<to>step5-Join</to>
 	</flow>
 	<flow>
-		<from>step5-Join</from>
-		<to>step3-CSVOutputSep</to>
+	<from>step5-Join</from>
+	<to>step 4-smart trans step</to>
 	</flow>
-	
+	<flow>
+	<from>step 4-smart trans step</from>
+	<to>step3-CSVOutputSep</to>
+	</flow>
+
+
 	<!--flow>
 		<from>step1-CSVInput</from>
 		<to>step5-Join</to>
