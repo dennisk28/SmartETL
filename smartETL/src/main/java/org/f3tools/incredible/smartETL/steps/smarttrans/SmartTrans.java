@@ -20,7 +20,6 @@ public class SmartTrans extends AbstractStep
 	private Logger logger = LoggerFactory.getLogger(SmartTrans.class);
 
 	private SmartTransDef smartTransDef;
-	private HashMap<String, Variable> variables;
 	private DataDef outputDataDef;
 	
 	public void setSmartTransDef(SmartTransDef smartTransDef)
@@ -38,21 +37,14 @@ public class SmartTrans extends AbstractStep
 	{
 		if (!super.init()) return false;
 		
+		smartTransDef = (SmartTransDef)getStepDef();
 		if (this.smartTransDef == null) return false;
 		
 		try
 		{
-			this.variables = new HashMap<String, Variable>();
 			this.outputDataDef = DataDefRegistry.getInstance().findDataDef(smartTransDef.getDataDefRef());
 			
 			Utl.check(this.outputDataDef == null, "Can't find data def " + smartTransDef.getDataDefRef());
-
-			for(SmartTransDef.VarDef varDef : this.smartTransDef.getVarDefs())
-			{
-				Variable var = new Variable(varDef.getName(), varDef.getFormula());
-				this.variables.put(varDef.getName(), var);
-				getContext().addVariable(varDef.getName(), var);
-			}
 		}
 		catch (Exception e)
 		{
@@ -72,9 +64,6 @@ public class SmartTrans extends AbstractStep
 	public DataRow map(DataRow inputRow) throws ETLException
 	{
 		DataRow outputRow = new DataRow(this.outputDataDef);
-		this.getContext().setCurrentInputRow(inputRow);
-		
-		recalculateVariables();
 		
 		for (SmartTransDef.Mapping mapping : this.smartTransDef.getMappings())
 		{
@@ -88,16 +77,6 @@ public class SmartTrans extends AbstractStep
 		return outputRow;
 	}
 	
-	private void recalculateVariables() throws ETLException
-	{
-		Context context = getContext();
-		
-		for(Variable v : this.variables.values())
-		{
-			v.setValue(context.eval(v.getFormula()));
-		}
-	}
-	
 	public boolean processRow() throws ETLException
 	{
 		DataRow r = getRow();
@@ -107,6 +86,11 @@ public class SmartTrans extends AbstractStep
 			setOutputDone();
 			return false;
 		}
+
+		this.setCurrentInputRow(r);
+
+		// if the row is filtered out, return
+		if (this.filterRow()) return true;
 		
 		putRow(map(r));
 

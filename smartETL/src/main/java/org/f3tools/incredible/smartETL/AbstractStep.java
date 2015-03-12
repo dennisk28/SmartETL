@@ -1,6 +1,7 @@
 package org.f3tools.incredible.smartETL;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,18 +19,31 @@ public abstract class AbstractStep implements Step
 	private String name;
 	private boolean debug;
 	private Context context;
+	private StepDef stepDef;
+	private String filterFormula;
 	
     private AtomicBoolean running;
     private AtomicBoolean stopped;
 	private AtomicBoolean paused;	
 	private boolean initialized = false;
 	protected DataDef dataDef;
-    
+	private HashMap<String, Variable> variables;
 	private Job job;
+
 	
 	public Job getJob()
 	{
 		return job;
+	}
+
+	public StepDef getStepDef()
+	{
+		return stepDef;
+	}
+
+	public void setStepDef(StepDef stepDef)
+	{
+		this.stepDef = stepDef;
 	}
 
 	public boolean isDebug() {
@@ -82,6 +96,23 @@ public abstract class AbstractStep implements Step
 		this.paused.set(paused);
 	}
 
+	public void setCurrentInputRow(DataRow inputRow) throws ETLException
+	{
+		this.getContext().setCurrentInputRow(inputRow);
+		
+		recalculateVariables();		
+	}
+	
+	private void recalculateVariables() throws ETLException
+	{
+		Context context = getContext();
+		
+		for(Variable v : this.variables.values())
+		{
+			v.setValue(context.eval(v.getFormula()));
+		}
+	}
+	
 	public AbstractStep(String name, Job job)
 	{
 		this.name = name;
@@ -122,6 +153,23 @@ public abstract class AbstractStep implements Step
 	
 	public boolean init() 
 	{
+		this.variables = new HashMap<String, Variable>();
+
+		if (stepDef != null && stepDef.getVarDefs() != null)
+		{
+			for(StepDef.VarDef varDef : this.stepDef.getVarDefs())
+			{
+				Variable var = new Variable(varDef.getName(), varDef.getFormula());
+				this.variables.put(varDef.getName(), var);
+				getContext().addVariable(varDef.getName(), var);
+			}
+		}
+		
+		if (stepDef != null)
+		{
+			this.filterFormula = stepDef.getFilterFormula();
+		}
+		
 		return true;
 	}
 
@@ -378,5 +426,24 @@ public abstract class AbstractStep implements Step
     	}
     	
     	return sb.toString();
+    }
+    
+    /**
+     * TODO save filtered row to somewhere  Dennis 2015/03/13
+     * If filter formula returns "false", the row is filtered out
+     * @return
+     * @throws ETLException
+     */
+    public boolean filterRow() throws ETLException
+    {
+    	if (this.filterFormula == null) return false;
+    	
+		
+		Object value = getContext().eval(filterFormula);
+		
+		if (value instanceof Boolean)
+			return !((Boolean) value).booleanValue();
+		else
+			throw new ETLException("Filter formula returns a non boolean value: " + value.toString());
     }
 }

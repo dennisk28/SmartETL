@@ -52,7 +52,7 @@ public class StepFactory
 			{
 				CSVInputDef csvInputDef = new CSVInputDef(stepDefNode);
 				CSVInput csvInput = new CSVInput(name, job);
-				csvInput.setCvsInputDef(csvInputDef);
+				csvInput.setStepDef(csvInputDef);
 				csvInput.setDebug(debug);
 			
 				return csvInput;
@@ -68,7 +68,7 @@ public class StepFactory
 			{
 				CSVOutputDef csvOutputDef = new CSVOutputDef(stepDefNode);
 				CSVOutput csvOutput = new CSVOutput(name, job);
-				csvOutput.setCsvOutputDef(csvOutputDef);
+				csvOutput.setStepDef(csvOutputDef);
 				csvOutput.setDebug(debug);
 			
 				return csvOutput;
@@ -84,7 +84,7 @@ public class StepFactory
 			{
 				SmartTransDef smartTransDef = new SmartTransDef(stepDefNode);
 				SmartTrans smartTrans = new SmartTrans(name, job);
-				smartTrans.setSmartTransDef(smartTransDef);
+				smartTrans.setStepDef(smartTransDef);
 				smartTrans.setDebug(debug);
 			
 				return smartTrans;
@@ -100,7 +100,7 @@ public class StepFactory
 			{
 				JoinDef joinDef = new JoinDef(stepDefNode);
 				Join join = new Join(name, job);
-				join.setJoinDef(joinDef);
+				join.setStepDef(joinDef);
 				join.setDebug(debug);
 			
 				return join;
@@ -116,7 +116,7 @@ public class StepFactory
 			{
 				SortDef sortDef = new SortDef(stepDefNode);
 				Sort sort = new Sort(name, job);
-				sort.setSortDef(sortDef);
+				sort.setStepDef(sortDef);
 				sort.setDebug(debug);
 			
 				return sort;

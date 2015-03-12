@@ -439,6 +439,8 @@ public class Sort extends AbstractStep
 	{
 		if (super.init())
 		{
+			sortDef = (SortDef)getStepDef();
+			
 			sortSize = sortDef.getSortsize();
 			freeMemoryPctLimit = sortDef.getFreememory();
 			if (sortSize <= 0 && freeMemoryPctLimit <= 0)

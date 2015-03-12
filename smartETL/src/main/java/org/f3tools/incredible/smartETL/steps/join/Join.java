@@ -144,17 +144,20 @@ public class Join extends AbstractStep
 				Arrays.sort(rightExcludedIdx);
 				leftExcludedIdx = new int[0];
 
-				outputDataDef.copyDataDef(leftRow.getDataDef());
+				if (leftRow != null) outputDataDef.copyDataDef(leftRow.getDataDef());
 				
-				DataDef newRightDataDef = new DataDef();
-				newRightDataDef.copyDataDef(rightRow.getDataDef());
-				
-				for (int i = rightExcludedIdx.length - 1; i >= 0; i--)
+				if (rightRow != null)
 				{
-					newRightDataDef.removeField(rightExcludedIdx[i]);
+					DataDef newRightDataDef = new DataDef();
+					newRightDataDef.copyDataDef(rightRow.getDataDef());
+					
+					for (int i = rightExcludedIdx.length - 1; i >= 0; i--)
+					{
+						newRightDataDef.removeField(rightExcludedIdx[i]);
+					}
+					
+					outputDataDef.copyDataDef(newRightDataDef);
 				}
-				
-				outputDataDef.copyDataDef(newRightDataDef);
 			}
 			else
 			{
@@ -162,16 +165,20 @@ public class Join extends AbstractStep
 				Arrays.sort(leftExcludedIdx);
 				rightExcludedIdx = new int[0];
 
-				DataDef newLeftDataDef = new DataDef();
-				newLeftDataDef.copyDataDef(leftRow.getDataDef());
-				
-				for (int i = leftExcludedIdx.length - 1; i >= 0; i--)
+				if (leftRow != null)
 				{
-					newLeftDataDef.removeField(leftExcludedIdx[i]);
+					DataDef newLeftDataDef = new DataDef();
+					newLeftDataDef.copyDataDef(leftRow.getDataDef());
+					
+					for (int i = leftExcludedIdx.length - 1; i >= 0; i--)
+					{
+						newLeftDataDef.removeField(leftExcludedIdx[i]);
+					}
+					
+					outputDataDef.copyDataDef(newLeftDataDef);
 				}
 				
-				outputDataDef.copyDataDef(newLeftDataDef);
-				outputDataDef.copyDataDef(rightRow.getDataDef());
+				if (rightRow != null) outputDataDef.copyDataDef(rightRow.getDataDef());
 			}
 		}
 
@@ -526,6 +533,7 @@ public class Join extends AbstractStep
 	{
 		if (!super.init()) return false;
 
+		this.joinDef = (JoinDef)getStepDef();
 		if (this.joinDef == null) return false;
 
 		String joinType = joinDef.getJoinType();

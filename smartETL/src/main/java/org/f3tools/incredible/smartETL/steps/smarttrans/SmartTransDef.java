@@ -12,18 +12,16 @@ import org.f3tools.incredible.smartETL.StepDef;
 public class SmartTransDef extends StepDef
 {
 	private String dataDefRef;
-	private List<VarDef> varDefs;
 	private List<Mapping> mappings;
 
-	public List<VarDef> getVarDefs() {
-		return varDefs;
-	}
 
-	public List<Mapping> getMappings() {
+	public List<Mapping> getMappings() 
+	{
 		return mappings;
 	}
 	
-	public String getDataDefRef() {
+	public String getDataDefRef() 
+	{
 		return dataDefRef;
 	}
 	
@@ -31,26 +29,7 @@ public class SmartTransDef extends StepDef
 	{
 		super(defNode);
 		
-		this.varDefs = new ArrayList<VarDef>();
 		this.mappings = new ArrayList<Mapping>();
-		
-		Node varsNode = XMLUtl.getSubNode(defNode, "variables");
-		
-		if (varsNode != null)
-		{
-			List<Node> vars = XMLUtl.getNodes(varsNode, "variable");
-			
-			for(Node varNode : vars)
-			{
-				String name = XMLUtl.getTagValue(varNode, "name");
-				String formula = XMLUtl.getTagValue(varNode, "formula");
-				
-				Utl.check(name == null, "Variable name has to be defined.");
-				Utl.check(formula == null, "Variable formula has to be defined.");
-				
-				this.varDefs.add(new VarDef(name, formula));
-			}
-		}
 
 		Node mapsNode = XMLUtl.getSubNode(defNode, "mappings");
 		
@@ -103,32 +82,4 @@ public class SmartTransDef extends StepDef
 			this.formula = forluma;
 		}
     }
-	
-    public static class VarDef 
-    {
-    	private String name;
-    	private String formula;
-    	
-    	public VarDef(String name, String formula)
-    	{
-    		this.name = name;
-    		this.formula = formula;
-    	}
-    	
-    	public String getName() {
-    		return name;
-    	}
-    	
-    	public void setName(String name) {
-    		this.name = name;
-    	}
-    	
-    	public String getFormula() {
-    		return formula;
-    	}
-    	
-    	public void setFormula(String formula) {
-    		this.formula = formula;
-    	}
-    }    
 }

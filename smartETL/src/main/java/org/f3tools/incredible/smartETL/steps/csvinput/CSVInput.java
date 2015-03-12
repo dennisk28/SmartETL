@@ -4,6 +4,7 @@ import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.f3tools.incredible.smartETL.AbstractStep;
 import org.f3tools.incredible.smartETL.DataDef;
 import org.f3tools.incredible.smartETL.DataDefRegistry;
+import org.f3tools.incredible.smartETL.DataRow;
 import org.f3tools.incredible.smartETL.Job;
 import org.f3tools.incredible.smartETL.utilities.CSVFile;
 import org.slf4j.Logger;
@@ -39,6 +40,8 @@ public class CSVInput extends AbstractStep
 	{
 		if (!super.init()) return false;
 		
+		this.cvsInputDef = (CSVInputDef)this.getStepDef();
+		
 		if (this.cvsInputDef == null) return false;
 		
 		try
@@ -63,15 +66,24 @@ public class CSVInput extends AbstractStep
 	}
 	
 	@Override
-	public boolean processRow()
+	public boolean processRow() throws ETLException
 	{
 		Object[] row = csvFile.readRow(true);
 		
 		if (row != null)
 		{
+			DataRow r = new DataRow();
+			r.setDataDef(dataDef);
+			r.setRow(row);
+			
+			this.setCurrentInputRow(r);
+
+			// if the row is filtered out, return
+			if (this.filterRow()) return true;
+			
 			try
 			{
-				this.putRow(this.dataDef, row);
+				this.putRow(r);
 			}
 			catch (ETLException e)
 			{

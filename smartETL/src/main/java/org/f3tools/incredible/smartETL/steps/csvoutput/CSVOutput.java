@@ -44,6 +44,8 @@ public class CSVOutput extends AbstractStep
 	{
 		if (!super.init()) return false;
 		
+		this.csvOutputDef = (CSVOutputDef)this.getStepDef();
+		
 		if (this.csvOutputDef == null) return false;
 		
 		try
