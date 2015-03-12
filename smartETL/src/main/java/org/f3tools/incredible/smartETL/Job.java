@@ -212,6 +212,7 @@ public class Job {
 		{
 			step.dispose();
 		}
-		
+	
+		logger.info("Job is done");
 	}
 }
