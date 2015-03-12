@@ -5,10 +5,18 @@
 	<step>
 		<name>step1-CSVInput</name>
 		<type>CSVInputStep</type>
+		<variables>
+			<variable>
+				<name>v1</name>
+				<formula>[firstname]</formula>
+			</variable>
+		</variables>
+		<!-- filter>left([v1];1)="j"</filter-->		
+		<filter>nullempty([v1])&lt;&gt;""</filter>		
 		<file>C:\Work\workspace\incredible\examples\customers1.txt</file>
 		<title>true</title>
 		<delimiter>;</delimiter>
-		<quote/>
+		<quote></quote>
 		<datadef ref="customer"/>
 	</step>
 	<step>
@@ -71,11 +79,11 @@
 		<mappings>
 			<mapping>
 				<field>id</field>
-				<formula>[id]</formula>/>
+				<formula>[id]</formula>
 			</mapping>
 			<mapping>
 				<field>name</field>
-				<formula>[firstname]</formula>/>
+				<formula>[firstname]</formula>
 				<formula tag="HK">if([firstname]="ayl-firstname";"aa";"bb")</formula>
 			</mapping>
 			<mapping>
@@ -143,7 +151,23 @@
 			</field>		
 		</fields>
 	</step>
-
+	<step>
+		<name>step8-sort</name>
+		<type>SortStep</type>
+		<tempdirectory>C:\Work\workspace\smartETLTest\temp</tempdirectory>
+		<prefix>sort_</prefix>
+		<sortsize>200</sortsize>
+		<compress>true</compress>
+		<uniquerows>false</uniquerows>
+		<fields>
+			<field>
+				<name>id</name>
+				<ascending>true</ascending>
+				<casesensitive>true</casesensitive>
+				<presorted>false</presorted>
+			</field>
+		</fields>
+	</step>
 	<!-- flow>
 		<from>step1-CSVInput</from>
 		<to>step 4-smart trans step</to>
@@ -170,12 +194,16 @@
 		<to>step5-Join</to>
 	</flow>
 	<flow>
-	<from>step5-Join</from>
-	<to>step 4-smart trans step</to>
+		<from>step5-Join</from>
+		<to>step 4-smart trans step</to>
 	</flow>
 	<flow>
-	<from>step 4-smart trans step</from>
-	<to>step3-CSVOutputSep</to>
+		<from>step 4-smart trans step</from>
+		<to>step8-sort</to>
+	</flow>
+	<flow>
+		<from>step8-sort</from>
+		<to>step3-CSVOutputSep</to>
 	</flow>
 
 
