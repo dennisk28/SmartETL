@@ -120,9 +120,9 @@ public class CSVFile
         int nLen = aLine.length();
         char c;
         char[] eBuf = new char[nLen];
+        char[] inputBuf = aLine.toCharArray();
         int ePos = 0;
         char dl = delimiter.charAt(0);
-        boolean startQ = false;
         
         int fldCount = this.dataDef.getFieldCount();
         
@@ -133,34 +133,33 @@ public class CSVFile
         
         if (quoteStr != null) quote = quoteStr.charAt(0);
         
-        //ArrayList<String> vRow = new ArrayList<String>();
-
         while(nPos < nLen)
         {
-            c = aLine.charAt(nPos);
+            c = inputBuf[nPos];
 
-        	if (quote != 0)
-        	{
-        		if (startQ)
-        		{
-        			if (c == quote)
-                    	startQ = false;
-        			else
-        				eBuf[ePos++] = c;
+            if (quote != 0 && c == quote)
+            {
+            	nPos++;
+            	
+            	if (nPos == nLen) continue;
+            	
+            	c = inputBuf[nPos];
 
-        			nPos++;
-    				continue;
-        		}
-        		else
-        		{
-        			if (c == quote)
-        			{
-        				startQ = true;
-        				nPos++;
-        				continue;
-        			}
-        		}
-        	}
+                while(c != quote)
+                {
+                	eBuf[ePos++] = c;
+                	nPos++;
+                	
+                	if (nPos == nLen) break;
+                	
+                	c = inputBuf[nPos];
+                }
+                
+                if (c == quote) nPos++;
+                
+                continue;
+            }
+            
         	
             if(dl == c)
             {
@@ -190,7 +189,7 @@ public class CSVFile
             }
             else
             {
-            	if (quote == 0) eBuf[ePos++] = c;
+            	eBuf[ePos++] = c;
             }
 
             nPos++;
