@@ -116,6 +116,10 @@ public class DataSetFile
     {
     	try
     	{
+    		writeBoolean(outputStream, data==null);
+    		
+    		if (data == null) return;
+    		
 	    	if (data instanceof String)
 	    	{
 	    		writeString(outputStream, (String)data);
@@ -203,6 +207,10 @@ public class DataSetFile
     	
     	try
     	{
+    		boolean isNull = (Boolean)readBoolean(inputStream).booleanValue();
+    		
+    		if (isNull) return null;
+    		
 	    	if (type.equalsIgnoreCase("String"))
 	    	{
 	    		return readString(inputStream);
