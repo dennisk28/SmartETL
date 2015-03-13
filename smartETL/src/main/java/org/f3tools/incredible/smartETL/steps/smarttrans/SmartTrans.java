@@ -1,16 +1,12 @@
 package org.f3tools.incredible.smartETL.steps.smarttrans;
 
-import java.util.HashMap;
-
 import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.f3tools.incredible.smartETL.utilities.Utl;
 import org.f3tools.incredible.smartETL.AbstractStep;
-import org.f3tools.incredible.smartETL.Context;
 import org.f3tools.incredible.smartETL.DataDef;
 import org.f3tools.incredible.smartETL.DataDefRegistry;
 import org.f3tools.incredible.smartETL.DataRow;
 import org.f3tools.incredible.smartETL.Job;
-import org.f3tools.incredible.smartETL.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
