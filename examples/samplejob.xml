@@ -13,7 +13,7 @@
 		</variables>
 		<!-- filter>left([v1];1)="j"</filter-->		
 		<filter>nullempty([v1])&lt;&gt;""</filter>		
-		<file>C:\Work\workspace\incredible\examples\customers1.txt</file>
+		<file>C:\Work\workspace\incredible\examples\customers1*.txt</file>
 		<title>true</title>
 		<delimiter>;</delimiter>
 		<quote></quote>
@@ -56,6 +56,15 @@
 		<name>step3-CSVOutputSep</name>
 		<type>CSVOutputStep</type>
 		<file>C:\Work\workspace\smartETLTest\output\outputcustomers.txt</file>
+		<title>true</title>
+		<delimiter>;</delimiter>
+		<quote></quote>
+		<!-- datadef ref="outputcustomer"/-->
+	</step>
+	<step>
+		<name>step1Output</name>
+		<type>CSVOutputStep</type>
+		<file>C:\Work\workspace\smartETLTest\output\customers_cmbi.txt</file>
 		<title>true</title>
 		<delimiter>;</delimiter>
 		<quote></quote>
@@ -112,7 +121,7 @@
 		<prefix>sort_</prefix>
 		<sortsize>200</sortsize>
 		<compress>true</compress>
-		<uniquerows>false</uniquerows>
+		<uniquerows>true</uniquerows>
 		<fields>
 			<field>
 				<name>zip</name>
@@ -205,6 +214,11 @@
 		<from>step8-sort</from>
 		<to>step3-CSVOutputSep</to>
 	</flow>
+	<flow>
+		<from>step1-CSVInput</from>
+		<to>step1Output</to>
+	</flow>
+
 
 
 	<!--flow>
