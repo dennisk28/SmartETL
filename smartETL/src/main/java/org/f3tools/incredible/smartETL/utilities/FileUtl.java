@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import org.f3tools.incredible.utilities.AntPathStringMatcher;
-
 /**
  * Utility classes on file operations
  * @author Desheng Kang
