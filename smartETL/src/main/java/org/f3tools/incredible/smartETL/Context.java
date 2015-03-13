@@ -35,6 +35,11 @@ public class Context
 		this.currentInputRow = row;
 	}
 	
+	public DataRow getCurrentInputRow()
+	{
+		return this.currentInputRow;
+	}
+	
 	/**
 	 * Variable is not a hard copy. external class can modify it. 
 	 * @param varName

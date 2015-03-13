@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractStep implements Step
 {
 	private Logger logger = LoggerFactory.getLogger(AbstractStep.class);
+	private Logger filterLogger = LoggerFactory.getLogger("filter");
 	
 	private List<DataSet> inputDataSets;
 	private List<DataSet> outputDataSets;
@@ -442,7 +443,16 @@ public abstract class AbstractStep implements Step
 		Object value = getContext().eval(filterFormula);
 		
 		if (value instanceof Boolean)
-			return !((Boolean) value).booleanValue();
+		{
+			if (!((Boolean) value).booleanValue())
+			{
+				filterLogger.debug("{}", 
+						this.printRow(this.getContext().getCurrentInputRow(), ";", "\""));
+				return true;
+			}
+			
+			return false;
+		}
 		else
 			throw new ETLException("Filter formula returns a non boolean value: " + value.toString());
     }
