@@ -1,6 +1,9 @@
 package org.f3tools.incredible.smartETL.steps.csvinput;
 
+import java.io.File;
+
 import org.f3tools.incredible.smartETL.utilities.ETLException;
+import org.f3tools.incredible.smartETL.utilities.FileUtl;
 import org.f3tools.incredible.smartETL.AbstractStep;
 import org.f3tools.incredible.smartETL.DataDef;
 import org.f3tools.incredible.smartETL.DataDefRegistry;
@@ -14,20 +17,22 @@ public class CSVInput extends AbstractStep
 {
 	private Logger logger = LoggerFactory.getLogger(CSVInput.class);
 	
-	private CSVInputDef cvsInputDef;
+	private CSVInputDef csvInputDef;
 	private DataDef dataDef;
 	private CSVFile csvFile;
+	private File[] csvFiles;
+	private int fileIdx;
 	
 	public DataDef getDataDef() {
 		return dataDef;
 	}
 	
 	public CSVInputDef getCvsInputDef() {
-		return cvsInputDef;
+		return csvInputDef;
 	}
 
-	public void setCvsInputDef(CSVInputDef cvsInputDef) {
-		this.cvsInputDef = cvsInputDef;
+	public void setCvsInputDef(CSVInputDef csvInputDef) {
+		this.csvInputDef = csvInputDef;
 	}
 
 	public CSVInput(String name, Job job)
@@ -40,35 +45,68 @@ public class CSVInput extends AbstractStep
 	{
 		if (!super.init()) return false;
 		
-		this.cvsInputDef = (CSVInputDef)this.getStepDef();
+		this.csvInputDef = (CSVInputDef)this.getStepDef();
 		
-		if (this.cvsInputDef == null) return false;
+		if (this.csvInputDef == null) return false;
 		
 		try
 		{
-			this.dataDef = DataDefRegistry.getInstance().findDataDef(cvsInputDef.getDataDefRef());
+			this.dataDef = DataDefRegistry.getInstance().findDataDef(csvInputDef.getDataDefRef());
 			
 			if (this.dataDef == null)
 			{
-				throw new ETLException("Can't find data def " + cvsInputDef.getDataDefRef());
+				throw new ETLException("Can't find data def " + csvInputDef.getDataDefRef());
 			}
 
-			csvFile = new CSVFile(dataDef, cvsInputDef.getFile(), cvsInputDef.getDelimiter(), 
-					cvsInputDef.getQuote(), cvsInputDef.hasTitle());
+			csvFiles = FileUtl.findFiles(csvInputDef.getFile());
+			
+			if (csvFiles == null || csvFiles.length == 0)
+			{
+				throw new ETLException("Can't find any csv file for:" + csvInputDef.getFile());
+			}
+			
+			fileIdx = 0;
+			
+			csvFile = getNextCSVFile();;
 		}
 		catch (Exception e)
 		{
-			logger.error("Can't open csv file {}", this.cvsInputDef.getFile(), e);
+			logger.error("Can't open csv file {}", this.csvInputDef.getFile(), e);
 			return false;
 		}
 		
 		return true;
 	}
 	
+	private CSVFile getNextCSVFile() throws ETLException
+	{
+		if (fileIdx < csvFiles.length)
+			return new CSVFile(dataDef, csvFiles[fileIdx].getAbsolutePath(), csvInputDef.getDelimiter(), 
+				csvInputDef.getQuote(), csvInputDef.hasTitle());
+		else
+			return null;
+	}
+	
 	@Override
 	public boolean processRow() throws ETLException
 	{
 		Object[] row = csvFile.readRow(true);
+
+		if (row == null)
+		{
+			if (fileIdx == csvFiles.length - 1)
+			{
+				this.setOutputDone();
+				return false;
+			}
+			else
+			{
+				fileIdx++;
+				csvFile.close();
+				csvFile = getNextCSVFile();
+				return processRow();
+			}
+		}
 		
 		if (row != null)
 		{
@@ -90,11 +128,6 @@ public class CSVInput extends AbstractStep
 				logger.error("Error processing csvFile ", e);
 				return false;
 			}
-		}
-		else
-		{
-			this.setOutputDone();
-			return false;
 		}
 		
 		return true;

@@ -19,8 +19,12 @@ public class CSVFile
 	private String quote;
 	private String path;
 	private DataDef dataDef;
+	private int topSkipCount;
+	private int bottomSkipCount;
 	
 	public CSVFile(DataDef dataDef, String path, String delimiter, String quote, boolean hasTitle) throws ETLException
+	//public CSVFile(DataDef dataDef, String path, String delimiter, String quote, boolean hasTitle, 
+	//		int topSkipCount, int bottomSkipCount) throws ETLException
 	{
 		try
 		{
@@ -28,9 +32,13 @@ public class CSVFile
 			this.delimiter = delimiter;
 			this.quote = quote;
 			this.path = path;
+			//this.topSkipCount = topSkipCount;
+			//this.bottomSkipCount = bottomSkipCount;
 			
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(path)), 
 				5000);
+			
+			//for (int i = 0; i < topSkipCount; i++) br.readLine(); //TODO shall we save it? Dennis 2015/3/13
 			
 			if (hasTitle) readRow(false);
 			

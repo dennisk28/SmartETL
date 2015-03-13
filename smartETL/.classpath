@@ -29,5 +29,6 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/libbase"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/libformula"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
