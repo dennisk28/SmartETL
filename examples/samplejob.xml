@@ -12,12 +12,14 @@
 			</variable>
 		</variables>
 		<!-- filter>left([v1];1)="j"</filter-->		
-		<filter>nullempty([v1])&lt;&gt;""</filter>		
-		<file>C:\Work\workspace\incredible\examples\customers1*.txt</file>
+		<!--filter>nullempty([v1])&lt;&gt;""</filter-->		
+		<file>C:\Work\workspace\incredible\examples\customers1.txt</file>
 		<title>true</title>
 		<delimiter>;</delimiter>
 		<quote></quote>
 		<datadef ref="customer"/>
+		<!--topskipcount>2</topskipcount-->
+		<bottomskipcount>10</bottomskipcount>
 	</step>
 	<step>
 		<name>step6-CSVInput</name>
@@ -121,7 +123,7 @@
 		<prefix>sort_</prefix>
 		<sortsize>200</sortsize>
 		<compress>true</compress>
-		<uniquerows>true</uniquerows>
+		<uniquerows>false</uniquerows>
 		<fields>
 			<field>
 				<name>zip</name>
