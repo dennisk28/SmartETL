@@ -12,6 +12,8 @@ public class CSVInputDef extends StepDef
 	private String delimiter;
 	private String dataDefRef;
 	private String quote;
+	private int topSkipCount;
+	private int bottomSkipCount;
 	
 	public String getDataDefRef() {
 		return dataDefRef;
@@ -41,6 +43,15 @@ public class CSVInputDef extends StepDef
 		this.delimiter = delimiter;
 	}
 
+	public int getTopSkipCount()
+	{
+		return topSkipCount;
+	}
+
+	public int getBottomSkipCount()
+	{
+		return bottomSkipCount;
+	}
 
 	public CSVInputDef(Node defNode) throws ETLException
 	{
@@ -49,9 +60,10 @@ public class CSVInputDef extends StepDef
 		this.file = XMLUtl.getTagValue(defNode, "file");
 		this.delimiter = XMLUtl.getTagValue(defNode, "delimiter");
 		this.quote = XMLUtl.getTagValue(defNode,  "quote");
+		this.topSkipCount = Const.toInt(XMLUtl.getTagValue(defNode,  "topskip"), 0);
+		this.bottomSkipCount = Const.toInt(XMLUtl.getTagValue(defNode,  "bottomskip"), 0);
 		
 		String hasTitle = XMLUtl.getTagValue(defNode, "title");
-		
 		if (hasTitle != null)
 		{
 			this.hasTitle = Const.toBoolean(hasTitle);

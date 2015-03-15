@@ -2,8 +2,12 @@ package org.f3tools.incredible.smartETL.utilities;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
 
 import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.f3tools.incredible.smartETL.DataDef;
@@ -13,18 +17,34 @@ import org.slf4j.LoggerFactory;
 public class CSVFile
 {
 	private Logger logger = LoggerFactory.getLogger(CSVFile.class);
+	private final static int MIN_BUFFER_SIZE = 1000;
 	
 	private BufferedReader br;
 	private String delimiter;
 	private String quote;
 	private String path;
 	private DataDef dataDef;
-	private int topSkipCount;
 	private int bottomSkipCount;
+	private int bufSize;
+	private String[] lineBuf;
+	private String[] titles;
+	private int curPos;
+	private int bufBottomPos;
+	private boolean eof;
+	
+	public String[] getTitles()
+	{
+		return this.titles;
+	}
 	
 	public CSVFile(DataDef dataDef, String path, String delimiter, String quote, boolean hasTitle) throws ETLException
-	//public CSVFile(DataDef dataDef, String path, String delimiter, String quote, boolean hasTitle, 
-	//		int topSkipCount, int bottomSkipCount) throws ETLException
+	{
+		this(dataDef, path, delimiter, quote, hasTitle, 0, 0);
+	}
+	
+	
+	public CSVFile(DataDef dataDef, String path, String delimiter, String quote, boolean hasTitle, 
+			int topSkipCount, int bottomSkipCount) throws ETLException
 	{
 		try
 		{
@@ -32,19 +52,70 @@ public class CSVFile
 			this.delimiter = delimiter;
 			this.quote = quote;
 			this.path = path;
-			//this.topSkipCount = topSkipCount;
-			//this.bottomSkipCount = bottomSkipCount;
+			this.bottomSkipCount = bottomSkipCount;
 			
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(path)), 
 				5000);
 			
-			//for (int i = 0; i < topSkipCount; i++) br.readLine(); //TODO shall we save it? Dennis 2015/3/13
+			if (bottomSkipCount > 0)
+			{
+				bufSize = Math.max(bottomSkipCount * 10, MIN_BUFFER_SIZE);
+				lineBuf = new String[bufSize];
+				eof = false;
+			}
 			
-			if (hasTitle) readRow(false);
+			// skip lines if required, TODO shall we save it? Dennis 2015/3/13	
+			for (int i = 0; i < topSkipCount; i++) readLine(); 
+			if (hasTitle)
+			{
+				Object[] row = readRow(false);
+				
+				if (row != null)
+				{
+					titles = new String[row.length];
+					for (int i = 0; i < row.length; i++) titles[i] = (String)row[i];
+				}
+			}
 			
 		} catch (Exception e)
 		{
 			throw new ETLException(e);
+		}
+	}
+	
+	private String readLine() throws IOException
+	{
+		if (lineBuf == null) return br.readLine();
+		if (bufBottomPos - curPos <= this.bottomSkipCount) refill();
+		if (bufBottomPos - curPos <= bottomSkipCount) return null;
+		
+		return lineBuf[curPos++];
+	}
+
+	private void refill() throws IOException
+	{
+		if (eof) return;
+
+		int len = bufBottomPos - curPos;
+		
+		if (curPos > 0) 
+		{
+			System.arraycopy(lineBuf,  curPos, lineBuf, 0, len);
+			bufBottomPos = len;
+			curPos = 0;
+		}
+		
+		for(; bufBottomPos < bufSize; bufBottomPos++)
+		{
+			String s = br.readLine();
+			
+			if (s == null)
+			{
+				eof = true;
+				return;
+			}
+			else
+				lineBuf[bufBottomPos] = s;
 		}
 	}
 	
@@ -57,11 +128,11 @@ public class CSVFile
 	{
 		String line = null;
 		Object[] row = null;
-		int fieldCount = this.dataDef.getFieldCount();
+		int fieldCount = dataDef == null ? this.dataDef.getFieldCount() : 0;
 		
 		try
 		{
-			line = br.readLine();
+			line = readLine();
 		
 			while (line != null)
 			{
@@ -70,7 +141,7 @@ public class CSVFile
 				// shall add code to log problematic rows
 				if (row != null)
 				{
-					if (row.length != fieldCount)
+					if (fieldCount > 0 && row.length != fieldCount)
 					{
 						logger.error("actual field amount {} is less than required amount {}, line:{}", row.length,
 								fieldCount, line);
@@ -81,7 +152,7 @@ public class CSVFile
 				else
 					logger.error("return null for line{}", line);
 				
-				line = br.readLine();
+				line = readLine();
 			}
 			
 			return null;
@@ -132,10 +203,7 @@ public class CSVFile
         int ePos = 0;
         char dl = delimiter.charAt(0);
         
-        int fldCount = this.dataDef.getFieldCount();
-        
-        Object[] vRow = new Object[fldCount];
-        int i = 0;
+        List<Object> vRow = new ArrayList<Object>();
         
         char quote = 0;
         
@@ -173,7 +241,7 @@ public class CSVFile
             {
                 if(ePos == 0)
                 {
-                    vRow[i++] = null;
+                    vRow.add(null);
                 }
                 else
                 {
@@ -187,10 +255,10 @@ public class CSVFile
                 	{
                 		String value = new String(eBuf, 0, ePos);
                 		if (conversion)
-                			vRow[i] = this.dataDef.getFieldValue(i, value);
+                			vRow.add(this.dataDef.getFieldValue(vRow.size(), value));
                 		else
-                			vRow[i] = value;
-                		i++;
+                			vRow.add(value);
+
                 		ePos = 0;
                 	}
                 }
@@ -210,19 +278,16 @@ public class CSVFile
     		String value = new String(eBuf, 0, ePos);
     		
     		if (conversion)
-    			vRow[i] = this.dataDef.getFieldValue(i, value);
+    			vRow.add(this.dataDef.getFieldValue(vRow.size(), value));
     		else
-    			vRow[i] = value;
+    			vRow.add(value);
         }
         else
         {
             // the last character is a delimiter
-            vRow[i] = null;
+            vRow.add(null);
         }
         
-        // if actual element larger than total field count, resize returned row
-        if (fldCount > i + 1) vRow = Arrays.copyOf(vRow, i + 1);
-        
-        return vRow;
+        return vRow.toArray();
     }	
 }

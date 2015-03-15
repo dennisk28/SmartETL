@@ -81,8 +81,9 @@ public class CSVInput extends AbstractStep
 	private CSVFile getNextCSVFile() throws ETLException
 	{
 		if (fileIdx < csvFiles.length)
-			return new CSVFile(dataDef, csvFiles[fileIdx].getAbsolutePath(), csvInputDef.getDelimiter(), 
-				csvInputDef.getQuote(), csvInputDef.hasTitle());
+			return new CSVFile(dataDef, csvFiles[fileIdx].getAbsolutePath(), 
+				csvInputDef.getDelimiter(), csvInputDef.getQuote(), csvInputDef.hasTitle(),
+				csvInputDef.getTopSkipCount(), csvInputDef.getBottomSkipCount());
 		else
 			return null;
 	}
