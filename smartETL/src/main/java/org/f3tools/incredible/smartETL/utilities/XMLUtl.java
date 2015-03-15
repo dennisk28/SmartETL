@@ -9,7 +9,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -18,16 +17,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.f3tools.incredible.smartETL.utilities.XMLUtl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-@SuppressWarnings("restriction")
 public class XMLUtl {
 
-	private static Logger logger = Logger.getLogger(XMLUtl.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(XMLUtl.class);
 	
 	public static <T> T JAXBUnmarshal(Class<T> c, String inputFileName)
 	{
@@ -37,7 +37,7 @@ public class XMLUtl {
 			return JAXBUnmarshal(c, fis);
 		} catch (FileNotFoundException e)
 		{
-			logger.severe("Can't load file " + inputFileName);
+			logger.error("Can't load file {} ", inputFileName);
 			return null;
 		}
 	}
@@ -52,7 +52,7 @@ public class XMLUtl {
 			return (T)unms.unmarshal(inputStream);
 		} catch (JAXBException e)
 		{
-			logger.severe("can't unmarshall class " + c.getName() + ", err:" + e);
+			logger.error("can't unmarshall class {}", c.getName(), e);
 			return null;
 		}
 	}
@@ -67,7 +67,7 @@ public class XMLUtl {
 			return writer.toString();
 		} catch (JAXBException e)
 		{
-			logger.severe("Can't marshall object " + obj + ", err" + e);
+			logger.error("Can't marshall object {}", obj, e);
 			return null;
 		}
 	}
@@ -91,7 +91,7 @@ public class XMLUtl {
 			}
 			catch(IOException ef)
 			{
-				logger.severe("Can't parse XML, err" + ef);
+				logger.error("Can't parse XML", ef);
 				return null;
 			}
 			finally
@@ -103,7 +103,7 @@ public class XMLUtl {
 		}
 		catch(Exception e)
 		{
-			logger.severe("Can't parse XML, err" + e);
+			logger.error("Can't parse XML", e);
 			return null;
 		}
 	}
@@ -127,7 +127,7 @@ public class XMLUtl {
 			}
 			catch(IOException ef)
 			{
-				logger.severe("Can't parse XML, err" + ef);
+				logger.error("Can't parse XML", ef);
 				return null;
 			}
 			finally
@@ -139,7 +139,7 @@ public class XMLUtl {
 		}
 		catch(Exception e)
 		{
-			logger.severe("Can't parse XML, err" + e);
+			logger.error("Can't parse XML", e);
 			return null;
 		}
 	}
