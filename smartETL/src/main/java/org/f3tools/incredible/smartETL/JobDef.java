@@ -8,10 +8,9 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.f3tools.incredible.smartETL.utilities.XMLUtl;
-import org.f3tools.incredible.smartETL.xml.XMLDataDef;
-import org.f3tools.incredible.smartETL.xml.XMLJob;
 
 public class JobDef 
 {
@@ -55,53 +54,100 @@ public class JobDef
 
 	public boolean loadXML(String jobDefFile)
 	{
-		XMLJob xmlJob = XMLUtl.JAXBUnmarshal(XMLJob.class, jobDefFile);
+		Document xmlDoc = XMLUtl.loadXMLFile(jobDefFile);
 		
-		if (xmlJob == null)
+		if (xmlDoc == null)
 		{
 			logger.error("Can't load job def file {} ", jobDefFile);
 			return false;
 		}
 		
+		Node root = xmlDoc.getDocumentElement();
+		
 		this.properties = new HashMap<String, String>();
 		
-		for (XMLJob.Property prp : xmlJob.getProperty())
+		Node propertiesNode = XMLUtl.getSubNode(root, "properties");
+		
+		if (propertiesNode != null)
 		{
-			properties.put(prp.getName(), prp.getValue());
-		}
+			List<Node> propertyNodeList = XMLUtl.getNodes(propertiesNode, "property");
 		
-		this.steps = new ArrayList<Node>();
-		
-		
-		for (Object stepO : xmlJob.getStep())
-		{
-			if (stepO instanceof Node)
+			if (propertyNodeList != null)
 			{
-				this.steps.add((Node)stepO);
-			}
-			else
-			{
-				logger.error("Step config is not a node type {}", stepO);
+				for (Node node : propertyNodeList)
+				{
+					properties.put(XMLUtl.getTagAttribute(node, "name"),
+							XMLUtl.getTagAttribute(node, "value"));
+				}
 			}
 		}
 
-		lookupDef = (Node)xmlJob.getLookups();
-		
-		DataDefRegistry defRegistry = DataDefRegistry.getInstance();
-		
-		for (XMLDataDef xmlDataDef : xmlJob.getDatadef())
+		Node stepsNode = XMLUtl.getSubNode(root, "steps");
+		if (stepsNode == null)
 		{
-			DataDef dataDef = new DataDef(xmlDataDef);
-			defRegistry.add(dataDef);
+			logger.error("steps node is missing in job definition file");
+			return false;
+		}
+		
+		this.steps = XMLUtl.getNodes(stepsNode, "step");
+		if (steps == null)
+		{
+			logger.error("at least one step shall be defined");
+			return false;
 		}
 
-		defRegistry.rewireParents();
+		lookupDef = XMLUtl.getSubNode(root, "lookups");
+		if (lookupDef == null)
+		{
+			logger.error("lookups node is missing in job definition file");
+			return false;
+		}
 		
+		Node datadefsNode = XMLUtl.getSubNode(root, "datadefs");
+		if (datadefsNode == null)
+		{
+			logger.error("datadefs node is missing in job definition file");
+			return false;
+		}
+		
+		List<Node> datadefNodeList = XMLUtl.getNodes(datadefsNode, "datadef");
+
+		if (datadefNodeList != null)
+		{
+			DataDefRegistry defRegistry = DataDefRegistry.getInstance();
+
+			for (Node dataDefNode : datadefNodeList)
+			{
+				DataDef dataDef = new DataDef(dataDefNode);
+				defRegistry.add(dataDef);
+			}
+
+			defRegistry.rewireParents();
+		}
+
 		this.flows = new ArrayList<Flow>();
 		
-		for(XMLJob.Flow xmlFlow : xmlJob.getFlow())
+		Node flowsNode = XMLUtl.getSubNode(root, "flows");
+		
+		if (flowsNode == null)
 		{
-			this.flows.add(new Flow(xmlFlow.getFrom(), xmlFlow.getTo()));
+			logger.error("flows node is missing in job definition file");
+			return false;
+		}
+		
+		List<Node> flowNodeList = XMLUtl.getNodes(flowsNode, "flow");
+		
+		if (flowNodeList == null)
+		{
+			logger.error("At least one flow shall be defined");
+			return false;
+		}
+		
+		for(Node flowNode : flowNodeList)
+		{
+			this.flows.add(new Flow(
+					XMLUtl.getTagValue(flowNode, "from"),
+					XMLUtl.getTagValue(flowNode, "to")));
 		}
 		
 		return true;

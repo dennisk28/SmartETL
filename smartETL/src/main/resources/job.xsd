@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by dennis (Fannie Mae/PO#HQR-3000034226) -->
 <!-- edited with XMLSpy v2015 sp2 (http://www.altova.com) by Dennis (Webfly) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jxb="http://java.sun.com/xml/ns/jaxb" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.1" jxb:version="1.0">
 	<xs:element name="job">
@@ -11,31 +12,51 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="name" type="xs:string"/>
-				<xs:sequence minOccurs="0" maxOccurs="unbounded">
-					<xs:element name="property">
-						<xs:complexType>
-							<xs:attribute name="name" type="xs:string"/>
-							<xs:attribute name="value" type="xs:string"/>
-						</xs:complexType>
-					</xs:element>
-				</xs:sequence>
-				<xs:sequence maxOccurs="unbounded">
-					<xs:element name="step"/>
-				</xs:sequence>
-				<xs:sequence maxOccurs="unbounded">
-					<xs:element name="flow">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="from" type="xs:string"/>
-								<xs:element name="to" type="xs:string"/>
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-				</xs:sequence>
-				<xs:sequence minOccurs="0" maxOccurs="unbounded">
-					<xs:element name="datadef" type="datadef"/>
-				</xs:sequence>
-				<xs:element name="lookups"/>
+				<xs:element name="properties" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="property">
+								<xs:complexType>
+									<xs:attribute name="name" type="xs:string"/>
+									<xs:attribute name="value" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="steps">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="step">
+								<xs:complexType>
+									<xs:attribute name="name" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="flows">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="flow">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="from" type="xs:string"/>
+										<xs:element name="to" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="datadefs" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="datadef" type="datadef"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="lookups" minOccurs="0"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -47,18 +68,22 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="name" type="xs:string"/>
-			<xs:sequence maxOccurs="unbounded">
-				<xs:element name="field">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="name" type="xs:string"/>
-							<xs:element name="type" type="xs:string"/>
-							<xs:element name="length" type="xs:int"/>
-							<xs:element name="format" type="xs:string" minOccurs="0"/>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-			</xs:sequence>
+			<xs:element name="fields">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="field">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="name" type="xs:string"/>
+									<xs:element name="type" type="xs:string"/>
+									<xs:element name="length" type="xs:int"/>
+									<xs:element name="format" type="xs:string" minOccurs="0"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="excludes" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence maxOccurs="unbounded">

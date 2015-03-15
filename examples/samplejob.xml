@@ -2,6 +2,7 @@
 <!-- edited with XMLSpy v2015 sp2 (http://www.altova.com) by Dennis (Webfly) -->
 <job xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Work/workspace/incredible/smartETL/src/main/resources/job.xsd">
 	<name/>
+	<steps>
 	<step>
 		<name>step1-CSVInput</name>
 		<type>CSVInputStep</type>
@@ -12,7 +13,7 @@
 			</variable>
 		</variables>
 		<!-- filter>left([v1];1)="j"</filter-->		
-		<!--filter>nullempty([v1])&lt;&gt;""</filter-->		
+		<filter>nullempty([v1])&lt;&gt;""</filter>		
 		<file>C:\Work\workspace\incredible\examples\customers1.txt</file>
 		<title>true</title>
 		<delimiter>;</delimiter>
@@ -117,7 +118,7 @@
 		</mappings>
 	</step>
 	<step>
-		<name>step7-sort</name>
+		<name>step7-sort</name>	
 		<type>SortStep</type>
 		<tempdirectory>C:\Work\workspace\smartETLTest\temp</tempdirectory>
 		<prefix>sort_</prefix>
@@ -179,6 +180,8 @@
 			</field>
 		</fields>
 	</step>
+	</steps>
+	<flows>
 	<!-- flow>
 		<from>step1-CSVInput</from>
 		<to>step 4-smart trans step</to>
@@ -221,7 +224,7 @@
 		<to>step1Output</to>
 	</flow>
 
-
+</flows>
 
 	<!--flow>
 		<from>step1-CSVInput</from>
@@ -244,8 +247,10 @@
 		<from>step 4-smart trans step</from>
 		<to>step3-CSVOutputSep</to>
 	</flow-->
+	<datadefs>
 	<datadef>
 		<name>customer</name>
+		<fields>
 		<field>
 			<name>id</name>
 			<type>Integer</type>
@@ -297,9 +302,11 @@
 			<type>String</type>
 			<length>30</length>
 		</field>
+		</fields>
 	</datadef>
 	<datadef>
 		<name>state</name>
+		<fields>
 		<field>
 			<name>zip</name>
 			<type>Integer</type>
@@ -315,9 +322,11 @@
 			<type>Integer</type>
 			<length>8</length>
 		</field>
+		</fields>
 	</datadef>
 	<datadef parent="customer">
 		<name>outputcustomer</name>
+		<fields>
 		<field>
 			<name>newfld</name>
 			<type>String</type>
@@ -333,10 +342,12 @@
 			<type>Integer</type>
 			<length>9</length>
 		</field>
+		</fields>
 		<excludes>
 			<field>stateCode</field>
 		</excludes>
 	</datadef>
+	</datadefs>
 	<lookups>
 		<lookup>
 			<name>testlookup</name>

@@ -8,9 +8,10 @@ import java.util.List;
 
 import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.f3tools.incredible.smartETL.utilities.IndexedList;
-import org.f3tools.incredible.smartETL.xml.XMLDataDef;
+import org.f3tools.incredible.smartETL.utilities.XMLUtl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
 
 public class DataDef
 {
@@ -23,32 +24,50 @@ public class DataDef
 	private List<String> excludedFields;
 	private IndexedList<String, Field> allFields;
 	
-	public DataDef(XMLDataDef xmlDataDef)
+	public DataDef(Node defNode)
 	{
 		this();
 		
-		for (XMLDataDef.Field xmlFld : xmlDataDef.getField())
-		{
-			Field field = new Field(xmlFld.getName(),
-					xmlFld.getType(),
-					xmlFld.getLength(),
-					xmlFld.getFormat());
-			
-			this.localfields.add(field.getName(), field);
-		}
+		if (defNode == null) return;
 		
-		XMLDataDef.Excludes xmlExcludes = xmlDataDef.getExcludes();
-
-		if (xmlExcludes != null)
+		Node fieldsNode = XMLUtl.getSubNode(defNode, "fields");
+		
+		if (fieldsNode != null)
 		{
-			for (String fld : xmlExcludes.getField())
+			List<Node> fieldNodeList = XMLUtl.getNodes(fieldsNode, "field");
+			
+			if (fieldNodeList != null)
 			{
-				this.excludedFields.add(fld);
+				for (Node node: fieldNodeList)
+				{
+					Field field = new Field(
+							XMLUtl.getTagValue(node, "name"),
+							XMLUtl.getTagValue(node, "type"),
+							Const.toInt(XMLUtl.getTagValue(node, "length"), 0),
+							XMLUtl.getTagValue(node, "format"));
+
+					this.localfields.add(field.getName(), field);
+				}
 			}
 		}
 		
-		this.name = xmlDataDef.getName();
-		this.parentName = xmlDataDef.getParent();
+		Node excludesNode = XMLUtl.getSubNode(defNode, "excludes");
+		
+		if (excludesNode != null)
+		{
+			List<Node> fieldNodeList = XMLUtl.getNodes(excludesNode, "field");
+			
+			if (fieldNodeList != null)
+			{
+				for (Node fieldNode : fieldNodeList)
+				{
+					this.excludedFields.add(XMLUtl.getNodeValue(fieldNode));
+				}
+			}
+		}
+		
+		this.name = XMLUtl.getTagValue(defNode, "name");
+		this.parentName = XMLUtl.getTagAttribute(defNode, "parent");
 		
 		retrieveAllFields();		
 	}	
