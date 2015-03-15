@@ -21,7 +21,6 @@ public class Sort extends AbstractStep
 	private Logger logger = LoggerFactory.getLogger(Sort.class);
 	
 	private boolean first = true;
-	private boolean[] convertKeysToNative;
 	private SortDef sortDef;
 	private int[] fieldnrs;
 	public List<Object[]>   buffer;
@@ -339,7 +338,6 @@ public class Sort extends AbstractStep
 			
 			SortDef.SortField[] fields = sortDef.getFields();
 			
-			convertKeysToNative = new boolean[fields.length];
 			this.fieldnrs = new int[fields.length];
 			for (int i = 0; i < fields.length; i++)
 			{
