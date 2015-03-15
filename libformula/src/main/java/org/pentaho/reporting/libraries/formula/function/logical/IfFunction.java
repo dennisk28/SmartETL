@@ -69,10 +69,17 @@ public class IfFunction implements Function
       return new TypeValuePair(type, value);
     }
     // if condition is false and no third parameter, return false
-    if(parameterCount == 2 || parameters.getValue(2) == null)
+    //if(parameterCount == 2 || parameters.getValue(2) == null)
+    //{
+    //  return RETURN_FALSE;
+    //}
+
+    //Dennis 2015/03/15 allow null value
+    if(parameterCount == 2)
     {
       return RETURN_FALSE;
     }
+    
     // else return third parameter
     final Object value = parameters.getValue(2);
     final Type type = parameters.getType(2);
