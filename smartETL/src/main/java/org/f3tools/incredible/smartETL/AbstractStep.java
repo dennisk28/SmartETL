@@ -30,6 +30,7 @@ public abstract class AbstractStep implements Step
 	protected DataDef dataDef;
 	private HashMap<String, Variable> variables;
 	private Job job;
+	private StepStats stats;
 
 	
 	public Job getJob()
@@ -123,6 +124,7 @@ public abstract class AbstractStep implements Step
 	    this.running = new AtomicBoolean();
 	    this.stopped = new AtomicBoolean();
 		this.paused = new AtomicBoolean();	
+		this.stats = StepStatsManager.getInstance().createStepStats(this);
 	}
 	
 	public String getName() {
@@ -237,6 +239,7 @@ public abstract class AbstractStep implements Step
         		if (row != null) 
         		{
         			dataRow.setDataDef(ds.getDataDef());
+        			this.stats.addLinesRead();
         			break;
         		}
         		
@@ -250,6 +253,7 @@ public abstract class AbstractStep implements Step
         			else
         			{
         				dataRow.setDataDef(ds.getDataDef());
+        				this.stats.addLinesRead();
         				break;
         			}
         		}
@@ -327,6 +331,7 @@ public abstract class AbstractStep implements Step
 
 		dataRow.setRow(row);
 		dataRow.setDataDef(dataSet.getDataDef());
+		this.getStats().addLinesRead();
 
 		return dataRow;
 	}    
@@ -372,6 +377,7 @@ public abstract class AbstractStep implements Step
       for (DataSet ds : this.outputDataSets) 
 	  {
     	  while (!ds.putRow(dataDef, row) && !isStopped()) ;
+    	  stats.addLinesWritten();
 	  }
     }
 
@@ -446,6 +452,7 @@ public abstract class AbstractStep implements Step
 		{
 			if (!((Boolean) value).booleanValue())
 			{
+				this.stats.addLinesFiltered();
 				filterLogger.debug("{}", 
 						this.printRow(this.getContext().getCurrentInputRow(), ";", "\""));
 				return true;
@@ -456,4 +463,9 @@ public abstract class AbstractStep implements Step
 		else
 			throw new ETLException("Filter formula returns a non boolean value: " + value.toString());
     }
+
+	public StepStats getStats()
+	{
+		return stats;
+	}
 }

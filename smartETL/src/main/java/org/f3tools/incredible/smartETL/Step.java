@@ -27,6 +27,7 @@ public interface Step
     public void stopAll();
 	public boolean isInitialized();	
 	public void setInitialized(boolean initialized);
+	public StepStats getStats();
 	
     public void setOutputDone();		
 }

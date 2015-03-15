@@ -97,6 +97,7 @@ public class CSVOutput extends AbstractStep
 			
 			bw.write(this.printRow(r, this.csvOutputDef.getDelimiter(), this.csvOutputDef.getQuote()));
 			bw.write("\n");
+			this.getStats().addLinesOutput();
 		}
 		catch (IOException e)
 		{

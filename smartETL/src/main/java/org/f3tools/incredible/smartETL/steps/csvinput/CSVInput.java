@@ -114,6 +114,7 @@ public class CSVInput extends AbstractStep
 			DataRow r = new DataRow();
 			r.setDataDef(dataDef);
 			r.setRow(row);
+			getStats().addLinesInput();
 			
 			this.setCurrentInputRow(r);
 

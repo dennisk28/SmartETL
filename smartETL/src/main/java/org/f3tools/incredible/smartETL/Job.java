@@ -213,6 +213,7 @@ public class Job {
 			step.dispose();
 		}
 	
+		logger.info(StepStatsManager.getInstance().toString());
 		logger.info("Job is done");
 	}
 }
