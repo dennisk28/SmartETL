@@ -105,6 +105,11 @@ public abstract class AbstractStep implements Step
 		recalculateVariables();		
 	}
 	
+	public void setCurrentOutputRow(DataRow outputRow) throws ETLException
+	{
+		this.getContext().setCurrentOutputRow(outputRow);
+	}
+
 	private void recalculateVariables() throws ETLException
 	{
 		Context context = getContext();

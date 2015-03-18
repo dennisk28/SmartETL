@@ -60,6 +60,7 @@ public class SmartTrans extends AbstractStep
 	public DataRow map(DataRow inputRow) throws ETLException
 	{
 		DataRow outputRow = new DataRow(this.outputDataDef);
+		this.setCurrentOutputRow(outputRow);
 		
 		for (SmartTransDef.Mapping mapping : this.smartTransDef.getMappings())
 		{

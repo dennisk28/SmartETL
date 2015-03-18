@@ -7,6 +7,8 @@ import org.f3tools.incredible.smartETL.formula.ICFormula;
 import org.f3tools.incredible.smartETL.formula.ICFormulaContext;
 import org.pentaho.reporting.libraries.formula.EvaluationException;
 import org.pentaho.reporting.libraries.formula.LibFormulaErrorValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -16,9 +18,11 @@ import org.pentaho.reporting.libraries.formula.LibFormulaErrorValue;
  */
 public class Context
 {
+	private Logger logger = LoggerFactory.getLogger(Context.class);
 	private Context parent;
 	private HashMap<String, Variable> variables;
 	private DataRow currentInputRow;
+	private DataRow currentOutputRow;
 	private ICFormula formula;
 	private ICFormulaContext formulaContext;
 	
@@ -30,6 +34,16 @@ public class Context
 		this.formulaContext = new ICFormulaContext(this);
 	}
 	
+	public DataRow getCurrentOutputRow()
+	{
+		return currentOutputRow;
+	}
+
+	public void setCurrentOutputRow(DataRow currentOutputRow)
+	{
+		this.currentOutputRow = currentOutputRow;
+	}
+
 	public void setCurrentInputRow(DataRow row)
 	{
 		this.currentInputRow = row;
@@ -65,14 +79,52 @@ public class Context
 	{
 		if (hasVariable(varName)) return this.getVariableValue(varName);
 		
-		DataDef dataDef = this.currentInputRow.getDataDef();
-		int idx = dataDef.getFieldIndex(varName);
-
-		if (idx >= 0)
-			return this.currentInputRow.getFieldValue(idx);
+		int dotPos = varName.indexOf(".");
+		String prefix = null;
+		String realVarName = null;
+		
+		if (dotPos > 0)
+		{
+			prefix = varName.substring(0,  dotPos);
+			realVarName = varName.substring(dotPos + 1);
+		}
 		else
-			//TODO shall throw a message "can't resolve the variable" 
-			throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NOTDEFINED_VALUE); 
+			realVarName = varName;
+		
+		if (realVarName == null) 
+		{
+			logger.error("Can't recognize var " + varName);
+			throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NOTDEFINED_VALUE);
+		}
+		
+		if ((prefix != null && prefix.equalsIgnoreCase("IN")) || prefix == null)
+		{
+			DataDef dataDef = this.currentInputRow.getDataDef();
+			int idx = dataDef.getFieldIndex(realVarName);
+
+			if (idx >= 0)
+				return this.currentInputRow.getFieldValue(idx);
+			else
+				//TODO shall throw a message "can't resolve the variable" 
+				throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NOTDEFINED_VALUE); 
+		}
+		else if (prefix.equalsIgnoreCase("OUT"))
+		{
+			DataDef dataDef = this.currentOutputRow.getDataDef();
+			int idx = dataDef.getFieldIndex(realVarName);
+
+			if (idx >= 0)
+				return this.currentOutputRow.getFieldValue(idx);
+			else
+				//TODO shall throw a message "can't resolve the variable" 
+				throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NOTDEFINED_VALUE); 
+			
+		}
+		else
+		{
+			logger.error("Can't recognize var " + varName);
+			throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NOTDEFINED_VALUE);
+		}
 	}
 	
 	public boolean hasVariable(String varName)
