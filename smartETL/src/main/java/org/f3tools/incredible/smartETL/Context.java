@@ -2,7 +2,7 @@ package org.f3tools.incredible.smartETL;
 
 import java.util.HashMap;
 
-import org.f3tools.incredible.smartETL.utilities.ETLException;
+import org.f3tools.incredible.smartETL.formula.FormulaException;
 import org.f3tools.incredible.smartETL.formula.ICFormula;
 import org.f3tools.incredible.smartETL.formula.ICFormulaContext;
 import org.pentaho.reporting.libraries.formula.EvaluationException;
@@ -64,15 +64,9 @@ public class Context
 		this.variables.put(varName, var);
 	}
 	
-	public Object eval(String formula) throws ETLException
+	public Object eval(String formula) throws FormulaException
 	{
-		try
-		{
 			return this.formula.evaluate(formula, this.formulaContext);
-		} catch (Exception e)
-		{
-			throw new ETLException("Error in evaluate formula " + formula + ", err:", e);
-		}
 	}
 	
 	public Object resolveVariable(String varName) throws EvaluationException

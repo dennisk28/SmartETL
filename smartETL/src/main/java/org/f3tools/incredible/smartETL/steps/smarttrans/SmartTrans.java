@@ -1,5 +1,6 @@
 package org.f3tools.incredible.smartETL.steps.smarttrans;
 
+import org.f3tools.incredible.smartETL.formula.FormulaException;
 import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.f3tools.incredible.smartETL.utilities.Utl;
 import org.f3tools.incredible.smartETL.AbstractStep;
@@ -7,6 +8,7 @@ import org.f3tools.incredible.smartETL.DataDef;
 import org.f3tools.incredible.smartETL.DataDefRegistry;
 import org.f3tools.incredible.smartETL.DataRow;
 import org.f3tools.incredible.smartETL.Job;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +59,7 @@ public class SmartTrans extends AbstractStep
 	 * @param inputRow
 	 * @return
 	 */
-	public DataRow map(DataRow inputRow) throws ETLException
+	public DataRow map(DataRow inputRow) throws ETLException, FormulaException
 	{
 		DataRow outputRow = new DataRow(this.outputDataDef);
 		this.setCurrentOutputRow(outputRow);
@@ -68,7 +70,21 @@ public class SmartTrans extends AbstractStep
 			
 			Utl.check(idx < 0, "Mapping field " + mapping.getField() + " does not exist in datadef");
 			
-			outputRow.setFieldValue(idx, this.getContext().eval(mapping.getFormula()));
+			try
+			{
+				Object value = this.getContext().eval(mapping.getFormula());
+				outputRow.setFieldValue(idx, value);
+			}
+			catch (FormulaException e)
+			{
+				if (e.getExceptionCode() == FormulaException.EXCEPTION_CODE_DROP)
+				{
+					throw e;
+				}
+				else
+					throw new ETLException(e);
+			}
+			
 		}
 		
 		return outputRow;
@@ -89,7 +105,24 @@ public class SmartTrans extends AbstractStep
 		// if the row is filtered out, return
 		if (this.filterRow()) return true;
 		
-		putRow(map(r));
+		DataRow mappedRow = null;
+		
+		try
+		{
+			mappedRow = map(r);
+		}
+		catch (FormulaException e)
+		{
+			if (e.getExceptionCode() == FormulaException.EXCEPTION_CODE_DROP) 
+			{
+				this.dropRow();
+				return true;
+			}
+			else
+				throw new ETLException("Unexpected formula exception " + e.getExceptionCode());
+		}
+		
+		putRow(mappedRow);
 
 		return true;	
 	}

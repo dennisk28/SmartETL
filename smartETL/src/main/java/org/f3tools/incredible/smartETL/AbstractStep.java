@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.f3tools.incredible.smartETL.formula.FormulaException;
 import org.f3tools.incredible.smartETL.utilities.ETLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,15 +103,22 @@ public abstract class AbstractStep implements Step
 	{
 		this.getContext().setCurrentInputRow(inputRow);
 		
-		recalculateVariables();		
+		try
+		{
+			recalculateVariables();
+		}
+		catch (FormulaException e)
+		{
+			throw new ETLException(e);
+		}
 	}
 	
-	public void setCurrentOutputRow(DataRow outputRow) throws ETLException
+	public void setCurrentOutputRow(DataRow outputRow)
 	{
 		this.getContext().setCurrentOutputRow(outputRow);
 	}
 
-	private void recalculateVariables() throws ETLException
+	private void recalculateVariables() throws FormulaException
 	{
 		Context context = getContext();
 		
@@ -450,16 +458,22 @@ public abstract class AbstractStep implements Step
     {
     	if (this.filterFormula == null) return false;
     	
-		
-		Object value = getContext().eval(filterFormula);
+    	Object value = null;
+    	
+		try
+		{
+			value = getContext().eval(filterFormula);
+		}
+		catch (FormulaException e)
+		{
+			if (e.getExceptionCode() == FormulaException.EXCEPTION_CODE_DROP) value = new Boolean(false);
+		}
 		
 		if (value instanceof Boolean)
 		{
 			if (!((Boolean) value).booleanValue())
 			{
-				this.stats.addLinesFiltered();
-				filterLogger.debug("{}", 
-						this.printRow(this.getContext().getCurrentInputRow(), ";", "\""));
+				dropRow();
 				return true;
 			}
 			
@@ -469,6 +483,13 @@ public abstract class AbstractStep implements Step
 			throw new ETLException("Filter formula returns a non boolean value: " + value.toString());
     }
 
+    public void dropRow() throws ETLException
+    {
+		this.stats.addLinesFiltered();
+		filterLogger.debug("{}", 
+				this.printRow(this.getContext().getCurrentInputRow(), ";", "\""));
+    }
+    
 	public StepStats getStats()
 	{
 		return stats;

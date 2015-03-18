@@ -96,7 +96,7 @@
 				</mapping>
 				<mapping>
 					<field>name</field>
-					<formula>[firstname]</formula>
+					<formula>[name]</formula>
 					<formula tag="HK">if([firstname]="ayl-firstname";"aa";"bb")</formula>
 				</mapping>
 				<mapping>
@@ -105,7 +105,8 @@
 				</mapping>
 				<mapping>
 					<field>lkfld</field>
-					<formula>[out.newfld]&amp;"-output"</formula>
+					<formula>if(left([name];1)="j";drop();"remain")</formula>
+					<!--formula>[out.newfld]&amp;"-output"</formula-->
 					<!--formula>nullempty(dlookup("testlookup";"city";[id];[name]))</formula-->
 					<!--formula>if(left([name];1)&lt;&gt;"h";dlookup("testlookup";"city";[firstname];[name])&amp;"-mytest";"not h name")</formula-->
 				</mapping>

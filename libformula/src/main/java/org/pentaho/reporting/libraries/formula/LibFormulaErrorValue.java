@@ -69,6 +69,10 @@ public class LibFormulaErrorValue implements ErrorValue
   public static final int ERROR_NOTDEFINED = 601;
   /** variable not defined error  Dennis 2015/03/11 */
   public static final LibFormulaErrorValue ERROR_NOTDEFINED_VALUE = new LibFormulaErrorValue(ERROR_NOTDEFINED);  
+
+  public static final int DROP = 800;
+  /** drop line signal  Dennis 2015/03/18 */
+  public static final LibFormulaErrorValue DROP_VALUE = new LibFormulaErrorValue(DROP);  
   
   private int errorCode;
   private static final long serialVersionUID = 5945536244711597636L;

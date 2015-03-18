@@ -3,8 +3,10 @@ package org.f3tools.incredible.smartETL.formula;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import org.pentaho.reporting.libraries.formula.EvaluationException;
 import org.pentaho.reporting.libraries.formula.FormulaContext;
 import org.pentaho.reporting.libraries.formula.LibFormulaBoot;
+import org.pentaho.reporting.libraries.formula.LibFormulaErrorValue;
 import org.pentaho.reporting.libraries.formula.lvalues.LValue;
 import org.pentaho.reporting.libraries.formula.lvalues.TypeValuePair;
 import org.pentaho.reporting.libraries.formula.parser.FormulaParser;
@@ -67,7 +69,18 @@ public class ICFormula implements Serializable, Cloneable
 			{
 				return typeValuePair.getValue();
 			}
-	    } catch (Exception e)
+	    }catch (EvaluationException ee)
+		{
+	    	if (ee.getErrorValue() == LibFormulaErrorValue.DROP_VALUE)
+	    	{
+	    		throw new FormulaException(FormulaException.EXCEPTION_CODE_DROP);
+	    	}
+	    	else
+	    	{
+	    		throw new FormulaException("Evaluation failed unexpectedly: ", ee);
+	    	}
+		}
+		catch (Exception e)
 	    {
 	      throw new FormulaException("Evaluation failed unexpectedly: ", e);
 	    }
