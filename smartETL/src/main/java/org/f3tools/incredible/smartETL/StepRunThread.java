@@ -1,5 +1,7 @@
 package org.f3tools.incredible.smartETL;
 
+import org.f3tools.incredible.smartETL.utilities.ETLException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,21 @@ public class StepRunThread implements Runnable
 		{
 			step.setRunning(true);
 			logger.debug("Step {} started", step.getName());
-			while (step.processRow() && !step.isStopped());
+			
+			boolean continueRun = true;
+			
+			while (continueRun && !step.isStopped())
+			{
+				try
+				{
+					continueRun = step.processRow();
+				}
+				catch (ETLException e)
+				{
+					logger.error("error processing step {} msg:{}", step.getName(), e.toString());
+					step.getStats().addLinesErrored();
+				}
+			}
 		}
 		catch(Throwable t)
 		{
@@ -53,5 +69,4 @@ public class StepRunThread implements Runnable
 			}
 		}
 	}
-
 }
