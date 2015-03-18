@@ -61,6 +61,19 @@ public class LookupManager
 		return lookup.lookup(keys);
 	}
 	
+	public boolean exist(String dataName, Object[] keys)
+	{
+		Lookup lookup = this.lookups.get(dataName);
+		
+		if (lookup == null)
+		{
+			logger.debug("can't find dataname {}", dataName);
+			return false;
+		}
+		
+		return lookup.exist(keys);
+	}
+	
 	public Object lookup(String dataName, String fieldName, Object[] keys)
 	{
 		Lookup lookup = this.lookups.get(dataName);

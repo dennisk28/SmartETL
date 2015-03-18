@@ -195,6 +195,14 @@ public class Lookup
 		return true;
 	}
 	
+	public boolean exist(Object[] keys)
+	{
+		if (lookup(keys) != null) 
+			return true;
+		else
+			return false;
+	}
+	
 	public Object[] lookup(Object[] keys)
 	{
 		if (!loaded.get())
