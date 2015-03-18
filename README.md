@@ -2,6 +2,8 @@
 
 If you are capable to work on this type of tool and are interested in projects which will use SmartETL, please drop me an email to denniskds@sina.com
 
+SmartETL will be used in several projects with total budget above $50 million. It's created to replace a well known commercial ETL product from a well known big name company. By using this tool, we expect to save 70% of ETL developers, increase 60% of productivity and reduce 50% of maintenance cost.
+
 ===================
 # SmartETL
 A light weight ETL engine and smart transformation framework
