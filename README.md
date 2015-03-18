@@ -1,3 +1,8 @@
+# Hiring
+
+If you are capable to work on this type of tool and are interested in projects which will use SmartETL, please drop me an email to denniskds@sina.com
+
+===================
 # SmartETL
 A light weight ETL engine and smart transformation framework
 
