@@ -40,5 +40,6 @@ Nice features:
 
 # Log
 2015/3/21
+
 1. Formula tag is supported now
 2. Two new tools are created. GenJobDef can generate job definition xml from an excel spreasheet. GrammarCheck can find out grammar errors in Excel mapping formulas.
