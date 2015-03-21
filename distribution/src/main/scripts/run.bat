@@ -1,1 +1,1 @@
-java -cp lib/smartETL-0.0.1.jar;lib/libbase-0.0.1.jar;lib/libformula-0.0.1.jar;lib/libUtilities-0.0.1.jar;lib/commons-logging-1.1.3.jar;lib/logback-classic-1.0.13.jar;lib/logback-core-1.0.13.jar;lib/slf4j-api-1.7.5.jar org.f3tools.incredible.smartETL.JobRunner examples/samplejob.xml
+java -cp lib/smartETL-0.0.1.jar;lib/libbase-0.0.1.jar;lib/libformula-0.0.1.jar;lib/commons-logging-1.1.3.jar;lib/logback-classic-1.0.13.jar;lib/logback-core-1.0.13.jar;lib/slf4j-api-1.7.5.jar org.f3tools.incredible.smartETL.JobRunner examples/samplejob.xml
