@@ -37,3 +37,8 @@ Nice features:
 5. You can filter out a row in formula
 6. All kind of functions such as string manipulation, date time manipulation ... are supported in the DSL
 7. You can define variables in smart trans step. you can use both input data, variables, and output data define output mapping rules
+
+# Log
+2015/3/21
+1. Formula tag is supported now
+2. Two new tools are created. GenJobDef can generate job definition xml from an excel spreasheet. GrammarCheck can find out grammar errors in Excel mapping formulas.
