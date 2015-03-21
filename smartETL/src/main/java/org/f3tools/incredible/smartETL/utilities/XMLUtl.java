@@ -269,6 +269,11 @@ public class XMLUtl {
 	{
 		if (n == null) return null;
 		
-		return n.getFirstChild().getNodeValue();
+		Node child = n.getFirstChild();
+		
+		if (child == null) 
+			return null;
+		else
+			return n.getFirstChild().getNodeValue();
 	}
 }

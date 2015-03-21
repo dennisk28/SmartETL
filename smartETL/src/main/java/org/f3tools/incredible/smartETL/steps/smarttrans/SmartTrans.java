@@ -55,6 +55,25 @@ public class SmartTrans extends AbstractStep
 	}
 	
 	/**
+	 * If tag value is defined, tag value is used. otherwise tag formula is used.
+	 * @return
+	 * @throws FormulaException
+	 */
+	private String getTag() throws FormulaException
+	{
+		String tagValue = smartTransDef.getTagValue();
+		
+		if (tagValue != null) return tagValue;
+		
+		String tagFormula = smartTransDef.getTagFormula();
+		
+		if (tagFormula != null)
+			return (String)this.getContext().eval(tagFormula);
+		else
+			return null;
+	}
+		
+	/**
 	 * This is the core function of SmartTransStep. 
 	 * @param inputRow
 	 * @return
@@ -70,21 +89,20 @@ public class SmartTrans extends AbstractStep
 			
 			Utl.check(idx < 0, "Mapping field " + mapping.getField() + " does not exist in datadef");
 			
-			try
-			{
-				Object value = this.getContext().eval(mapping.getFormula());
-				outputRow.setFieldValue(idx, value);
-			}
-			catch (FormulaException e)
-			{
-				if (e.getExceptionCode() == FormulaException.EXCEPTION_CODE_DROP)
-				{
-					throw e;
-				}
-				else
-					throw new ETLException(e);
-			}
+			String tag = getTag();
+			String formula = mapping.getFormula(tag);
 			
+			Object value = null;
+			
+			if (formula == null)
+			{
+				logger.error("Can't find formula for tag {} for field {}", tag, mapping.getField());
+				value = null;
+			}
+			else
+				value = this.getContext().eval(formula);
+			
+			outputRow.setFieldValue(idx, value);
 		}
 		
 		return outputRow;
@@ -119,7 +137,7 @@ public class SmartTrans extends AbstractStep
 				return true;
 			}
 			else
-				throw new ETLException("Unexpected formula exception " + e.getExceptionCode());
+				throw new ETLException("Unexpected formula exception ", e);
 		}
 		
 		putRow(mappedRow);

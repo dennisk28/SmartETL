@@ -55,7 +55,7 @@ public class ICFormula implements Serializable, Cloneable
 	      
 			if (typeValuePair == null)
 			{
-				throw new FormulaException("NA error returned");
+				throw new FormulaException("NA error returned, formula=" + sFormula);
 			}
 	      
 			final Type type = typeValuePair.getType();
@@ -77,12 +77,12 @@ public class ICFormula implements Serializable, Cloneable
 	    	}
 	    	else
 	    	{
-	    		throw new FormulaException("Evaluation failed unexpectedly: ", ee);
+	    		throw new FormulaException("Evaluation failed unexpectedly, formula=" + sFormula, ee);
 	    	}
 		}
 		catch (Exception e)
 	    {
-	      throw new FormulaException("Evaluation failed unexpectedly: ", e);
+	      throw new FormulaException("Evaluation failed unexpectedly, formula=" + sFormula, e);
 	    }
 	}
 	

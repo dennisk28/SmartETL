@@ -78,7 +78,8 @@
 			<name>step 4-smart trans step</name>
 			<type>SmartTransStep</type>
 			<datadef ref="outputcustomer"/>
-			<currenttag>HK</currenttag>
+			<!--tag value="HK" formula="HK1"/-->
+			<tag formula="&quot;HK&quot;"/>
 			<variables>
 				<variable>
 					<name>v1</name>
@@ -93,6 +94,7 @@
 				<mapping>
 					<field>id</field>
 					<formula>[id]</formula>
+					<formula tag="HK" ref="DEFAULT"/>
 				</mapping>
 				<mapping>
 					<field>name</field>
@@ -101,11 +103,13 @@
 				</mapping>
 				<mapping>
 					<field>newfld</field>
-					<formula>if(left([name];1)="p";"aa";[firstname])</formula>
+					<formula>"noformula"</formula>
+					<formula tag="HK">if(left([name];1)="p";"aa";[firstname])</formula>
 				</mapping>
 				<mapping>
 					<field>lkfld</field>
 					<formula>if(left([name];1)="j";drop();"remain")</formula>
+					<formula tag="HK" ref="DEFAULT"/>
 					<!--formula>[out.newfld]&amp;"-output"</formula-->
 					<!--formula>nullempty(dlookup("testlookup";"city";[id];[name]))</formula-->
 					<!--formula>if(left([name];1)&lt;&gt;"h";dlookup("testlookup";"city";[firstname];[name])&amp;"-mytest";"not h name")</formula-->
@@ -117,6 +121,7 @@
 				<mapping>
 					<field>population</field>
 					<formula>[population]</formula>
+					<formula tag="HK" ref="DEFAULT"/>
 				</mapping>
 			</mappings>
 		</step>

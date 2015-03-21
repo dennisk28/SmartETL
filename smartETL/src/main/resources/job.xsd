@@ -153,7 +153,12 @@
 		<xs:complexContent>
 			<xs:extension base="StepDef">
 				<xs:sequence>
-					<xs:element name="currenttag" minOccurs="0"/>
+					<xs:element name="tag" minOccurs="0">
+						<xs:complexType>
+							<xs:attribute name="value" type="xs:string" use="optional"/>
+							<xs:attribute name="formula" type="xs:string" use="optional"/>
+						</xs:complexType>
+					</xs:element>
 					<xs:element name="datadef" type="datadef"/>
 					<xs:element name="variables" minOccurs="0">
 						<xs:complexType>
@@ -180,6 +185,7 @@
 												<xs:element name="formula">
 													<xs:complexType>
 														<xs:attribute name="tag" type="xs:string"/>
+														<xs:attribute name="ref" type="xs:string" use="optional"/>
 													</xs:complexType>
 												</xs:element>
 											</xs:sequence>

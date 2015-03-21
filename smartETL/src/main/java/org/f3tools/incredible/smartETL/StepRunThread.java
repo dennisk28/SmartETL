@@ -31,7 +31,7 @@ public class StepRunThread implements Runnable
 				}
 				catch (ETLException e)
 				{
-					logger.error("error processing step {} msg:{}", step.getName(), e.toString());
+					logger.error("error processing step {} msg:{}", step.getName(), e.getStackTrack());
 					step.getStats().addLinesErrored();
 				}
 			}
