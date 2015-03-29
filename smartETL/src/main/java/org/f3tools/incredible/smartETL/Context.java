@@ -99,6 +99,7 @@ public class Context
 			if (idx >= 0)
 				return this.currentInputRow.getFieldValue(idx);
 			else
+				logger.error("Can't recognize var " + varName);
 				//TODO shall throw a message "can't resolve the variable" 
 				throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NOTDEFINED_VALUE); 
 		}
@@ -110,6 +111,7 @@ public class Context
 			if (idx >= 0)
 				return this.currentOutputRow.getFieldValue(idx);
 			else
+				logger.error("Can't recognize var " + varName);
 				//TODO shall throw a message "can't resolve the variable" 
 				throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NOTDEFINED_VALUE); 
 			
