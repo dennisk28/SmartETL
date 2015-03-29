@@ -43,3 +43,12 @@ Nice features:
 
 1. Formula tag is supported now
 2. Two new tools are created. GenJobDef can generate job definition xml from an excel spreasheet. GrammarCheck can find out grammar errors in Excel mapping formulas.
+
+2015/3/30
+
+1. Added if, then, else to DSL
+2. Renamed function if to iif
+3. Support And, Or, Not logical operator
+4. Fixed a bug in PrefixTerm and PostfixTerm which didn't have initialize methods
+5. Removed square bracket for variables
+6. Changed function delimiter from ; to ,
