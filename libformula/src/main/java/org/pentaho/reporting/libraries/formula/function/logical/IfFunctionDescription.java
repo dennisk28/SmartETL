@@ -34,7 +34,7 @@ public class IfFunctionDescription extends AbstractFunctionDescription
 
   public IfFunctionDescription()
   {
-    super("IF", "org.pentaho.reporting.libraries.formula.function.logical.If-Function");
+    super("IIF", "org.pentaho.reporting.libraries.formula.function.logical.If-Function");
   }
 
   public int getParameterCount()

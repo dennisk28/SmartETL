@@ -42,7 +42,7 @@ public class IfFunction implements Function
 
   public String getCanonicalName()
   {
-    return "IF";
+    return "IIF";
   }
 
   public TypeValuePair evaluate(final FormulaContext context,

@@ -30,7 +30,7 @@ public abstract class AbstractLValue implements LValue
 {
   private static final LValue[] EMPTY_CHILDS = new LValue[0];
 
-  private transient FormulaContext context;
+  protected transient FormulaContext context;
   private static final long serialVersionUID = -8929559303303911502L;
   private ParsePosition parsePosition;
 

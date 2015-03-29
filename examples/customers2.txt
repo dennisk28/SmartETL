@@ -1,0 +1,2 @@
+id;name;firstname;zip;city;birthdate;street;housenr;stateCode;state
+ 1;jwcdf-name;; 13520;oem-city;1954/02/07;amrb-street; 145;AK;ALASKA

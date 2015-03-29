@@ -17,8 +17,10 @@
 
 package org.pentaho.reporting.libraries.formula.lvalues;
 
+import org.pentaho.reporting.libraries.formula.function.FunctionRegistry;
 import org.pentaho.reporting.libraries.formula.operators.PrefixOperator;
 import org.pentaho.reporting.libraries.formula.EvaluationException;
+import org.pentaho.reporting.libraries.formula.FormulaContext;
 
 /**
  * Creation-Date: 02.11.2006, 10:20:27
@@ -56,7 +58,12 @@ public class PrefixTerm extends AbstractLValue
     return value;
   }
 
-
+  public void initialize(final FormulaContext context) throws EvaluationException
+  {
+    super.initialize(context);
+    value.initialize(context);
+  }
+  
   public TypeValuePair evaluate() throws EvaluationException
   {
     return operator.evaluate(getContext(), value.evaluate());

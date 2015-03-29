@@ -58,12 +58,12 @@ public class FormulaParser extends GeneratedFormulaParser
     try
     {
       ReInit(new StringReader(formula));
-      final LValue expression = getExpression();
+      final LValue statement = getStatement();
       if (token.next != null && token.next.image.length() > 0)
       {
         throw new FormulaParseException("Extra content: '" + token.next.image + "'");
       }
-      return expression;
+      return statement;
     }
     catch (ParseException pe)
     {

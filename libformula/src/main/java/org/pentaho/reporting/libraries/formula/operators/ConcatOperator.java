@@ -47,10 +47,15 @@ public class ConcatOperator implements InfixOperator
     // Error or empty string, that's the question ..
     final Object raw1 = value1.getValue();
     final Object raw2 = value2.getValue();
-    if (raw1 == null || raw2 == null)
-    {
-      throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NA_VALUE);
-    }
+    
+    // Dennis 2015/03/28 null is treated as empty string, if both are null, return the first parameter
+    
+    if (raw1 == null && raw2 == null) return value1;    	
+    
+    //if (raw1 == null || raw2 == null)
+    //{
+    //  throw EvaluationException.getInstance(LibFormulaErrorValue.ERROR_NA_VALUE);
+    //}
 
     final String text1 = typeRegistry.convertToText(value1.getType(), raw1);
     final String text2 = typeRegistry.convertToText(value2.getType(), raw2);

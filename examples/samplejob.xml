@@ -10,11 +10,11 @@
 			<variables>
 				<variable>
 					<name>v1</name>
-					<formula>[firstname]</formula>
+					<formula>firstname</formula>
 				</variable>
 			</variables>
 			<!-- filter>left([v1];1)="j"</filter-->
-			<filter>nullempty([v1])&lt;&gt;""</filter>
+			<filter>nullempty(v1)&lt;&gt;""</filter>
 			<file>C:\Work\workspace\incredible\examples\customers1.txt</file>
 			<title>true</title>
 			<delimiter>;</delimiter>
@@ -83,7 +83,7 @@
 			<variables>
 				<variable>
 					<name>v1</name>
-					<formula>[firstname]</formula>
+					<formula>firstname</formula>
 				</variable>
 				<variable>
 					<name>v2</name>
@@ -93,22 +93,23 @@
 			<mappings>
 				<mapping>
 					<field>id</field>
-					<formula>[id]</formula>
+					<formula>id</formula>
 					<formula tag="HK" ref="DEFAULT"/>
 				</mapping>
 				<mapping>
 					<field>name</field>
-					<formula>[name]</formula>
-					<formula tag="HK">if([firstname]="ayl-firstname";"aa";"bb")</formula>
+					<formula tag="HK2">name</formula>
+					<formula tag="HK">if (firstname="ayl-firstname") AND ("test" &lt;&gt;"test" or "test"="test") then "-jj" else "-bb" end</formula>
+					<!--formula tag="HK">if([firstname]="ayl-firstname";"aa";"bb")</formula-->
 				</mapping>
 				<mapping>
 					<field>newfld</field>
-					<formula>"noformula"</formula>
-					<formula tag="HK">if(left([name];1)="p";"aa";[firstname])</formula>
+					<formula tag="HK">"noformula"&amp;out.name</formula>
+					<formula tag="HK1">iif(left(name,1)="p","aa",firstname)</formula>
 				</mapping>
 				<mapping>
 					<field>lkfld</field>
-					<formula>if(left([name];1)="j";drop();"remain")</formula>
+					<formula>iif(left(name,1)="j",drop(),"remain")</formula>
 					<formula tag="HK" ref="DEFAULT"/>
 					<!--formula>[out.newfld]&amp;"-output"</formula-->
 					<!--formula>nullempty(dlookup("testlookup";"city";[id];[name]))</formula-->
@@ -120,7 +121,7 @@
 			</mapping-->
 				<mapping>
 					<field>population</field>
-					<formula>[population]</formula>
+					<formula>population</formula>
 					<formula tag="HK" ref="DEFAULT"/>
 				</mapping>
 			</mappings>

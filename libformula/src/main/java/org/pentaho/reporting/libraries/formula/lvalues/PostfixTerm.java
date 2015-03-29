@@ -18,6 +18,7 @@
 package org.pentaho.reporting.libraries.formula.lvalues;
 
 import org.pentaho.reporting.libraries.formula.EvaluationException;
+import org.pentaho.reporting.libraries.formula.FormulaContext;
 import org.pentaho.reporting.libraries.formula.operators.PostfixOperator;
 
 /**
@@ -55,6 +56,12 @@ public class PostfixTerm extends AbstractLValue
     return value;
   }
 
+  public void initialize(final FormulaContext context) throws EvaluationException
+  {
+    super.initialize(context);
+    value.initialize(context);
+  }
+  
   public TypeValuePair evaluate() throws EvaluationException
   {
     return operator.evaluate(getContext(), value.evaluate());

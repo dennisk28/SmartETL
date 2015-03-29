@@ -182,16 +182,16 @@ public class DefaultOperatorFactory implements OperatorFactory
 
   public InfixOperator createInfixOperator(final String operator)
   {
-    return infixOperators.get(operator);
+    return infixOperators.get(operator.toUpperCase());
   }
 
   public PostfixOperator createPostfixOperator(final String operator)
   {
-    return postfixOperators.get(operator);
+    return postfixOperators.get(operator.toUpperCase());
   }
 
   public PrefixOperator createPrefixOperator(final String operator)
   {
-    return prefixOperators.get(operator);
+    return prefixOperators.get(operator.toUpperCase());
   }
 }

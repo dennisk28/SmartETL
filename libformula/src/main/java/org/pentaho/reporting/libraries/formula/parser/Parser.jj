@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import org.pentaho.reporting.libraries.formula.lvalues.ContextLookup;
 import org.pentaho.reporting.libraries.formula.lvalues.FormulaFunction;
+import org.pentaho.reporting.libraries.formula.statement.IfStatement;
 import org.pentaho.reporting.libraries.formula.lvalues.LValue;
 import org.pentaho.reporting.libraries.formula.lvalues.PostfixTerm;
 import org.pentaho.reporting.libraries.formula.lvalues.PrefixTerm;
@@ -110,13 +111,20 @@ TOKEN [IGNORE_CASE]:
   | <LT:           "<">
   | <GT:           ">">
   | <CONCAT:       "&">
+  | <AND:          "AND">
+  | <OR:           "OR">
+  | <NOT:          "NOT">
 // Postfix operators: Only one for now.
   | <PERCENT:      "%">
 // Prefix operators: Two defined at the moment, PLUS and MINUS (already covered).
-
+  | <IF:           "IF">
+  | <ELSE:         "ELSE">
+  | <THEN:         "THEN">
+  | <END:          "END">
 
 ///
 ///
+  | <NULL:                         "null">
   | <IDENTIFIER:  (<LETTER> (<LETTER> | <DIGIT>)* (<PERIOD> (<LETTER> | <DIGIT>)*)?)>
   | <COLUMN_LOOKUP:  ((<L_BRACKET> (<NONQUOTE_LOOKUP>)* <R_BRACKET>) |
                       (<L_BRACKET> <DQUOTE> (<NONQUOTE_CHARACTER>)* <DQUOTE> <R_BRACKET>))>
@@ -129,7 +137,34 @@ TOKEN [IGNORE_CASE]:
   | <#APPROXIMATE_NUMERIC_LITERAL: (<MANTISSA> ["E","e"] ( (<SIGN>)? <UNSIGNED_INTEGER>))>
   | <#MANTISSA:                    <EXACT_NUMERIC_LITERAL> >
   | <#SIGN:                        ["+","-"]>
-  | <NULL:                         "null">
+}
+
+LValue getStatement () :
+{
+	LValue retval = null;
+}
+{
+  (
+  	retval = getIfStatement()
+  	| retval = getExpression()
+  )
+  { return retval; }
+}
+
+
+LValue getIfStatement () :
+{
+   LValue temp = null;
+   IfStatement ifStatement = new IfStatement();
+}
+{
+  <IF> temp = getExpression() { ifStatement.setCondition(temp); }
+  <THEN> temp = getStatement() { ifStatement.setThenStatement(temp); }
+  ( LOOKAHEAD(2) <ELSE> temp = getStatement() { ifStatement.setElseStatement(temp); })?
+  <END>
+  {
+      return ifStatement;
+  }
 }
 
 LValue getExpression () :
@@ -190,13 +225,13 @@ LValue getLValue ():
     prefixOp = getPrefixOperator()
   )?
   (
-      value = <COLUMN_LOOKUP> { retval = new ContextLookup (ParserTools.stripReferenceQuote(value.image), createPosition(value)); }
-    | value = <STRING_LITERAL> { retval = new StaticValue (ParserTools.stripQuote(value.image), TextType.TYPE, createPosition(value)); }
+      value = <STRING_LITERAL> { retval = new StaticValue (ParserTools.stripQuote(value.image), TextType.TYPE, createPosition(value)); }
     | value = <UNSIGNED_NUMERIC_LITERAL> { retval = new StaticValue (new BigDecimal (value.image), NumberType.GENERIC_NUMBER, createPosition(value)); }
     | value = <UNSIGNED_INTEGER> { retval = new StaticValue (new BigDecimal (value.image), NumberType.GENERIC_NUMBER, createPosition(value)); }
-    | <NULL> { retval = new StaticValue (null, createPosition(value)); }
+    | value = <NULL> { retval = new StaticValue (null, createPosition(value)); }
     | <L_BRACE> { retval = parseArray(); } <R_BRACE>
-    | value = <IDENTIFIER> <L_PAREN> { retval = parseFunction(value.image, createPosition(value)); } <R_PAREN>
+    | LOOKAHEAD(2) value = <IDENTIFIER> <L_PAREN> { retval = parseFunction(value.image, createPosition(value)); } <R_PAREN>
+    | value = <IDENTIFIER> { retval = new ContextLookup (value.image, createPosition(value)); }
     | <L_PAREN> { retval = getExpression (); } <R_PAREN>
     {
       if (retval instanceof Term == false)
@@ -284,7 +319,7 @@ LValue parseFunction (String name, ParsePosition parsePosition) :
    (
      (
        (
-         value = <SEMICOLON>
+         value = <COMMA>
          {
            parameterExpected = false;
            params.add(new StaticValue(null, createPosition(value)));
@@ -300,7 +335,7 @@ LValue parseFunction (String name, ParsePosition parsePosition) :
      )
      (
        (
-         value = <SEMICOLON>
+         value = <COMMA>
          {
            if (parameterExpected == true)
            {
@@ -342,6 +377,7 @@ PrefixOperator getPrefixOperator () :
   (
      value = <PLUS>
    | value = <MINUS>
+   | value = <NOT>
   )
   {
      return getOperatorFactory().createPrefixOperator(value.image);
@@ -380,6 +416,8 @@ InfixOperator getInfixOperator () :
   | value = <LT>
   | value = <GT>
   | value = <CONCAT>
+  | value = <AND>
+  | value = <OR>
   )
   {
     return getOperatorFactory().createInfixOperator(value.image);
