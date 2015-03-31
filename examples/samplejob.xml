@@ -89,12 +89,20 @@
 					<name>v2</name>
 					<formula>"A"</formula>
 				</variable>
+				<variable>
+					<name>d1</name>
+					<formula>DateAdd(Date(2015,3,31), "D", 300)</formula>
+				</variable>
 			</variables>
 			<mappings>
 				<mapping>
 					<field>id</field>
 					<formula>id</formula>
 					<formula tag="HK" ref="DEFAULT"/>
+				</mapping>
+				<mapping>
+					<field>birthdate</field>
+					<formula tag="HK">d1</formula>
 				</mapping>
 				<mapping>
 					<field>name</field>
@@ -285,7 +293,7 @@
 					<name>birthdate</name>
 					<type>Date</type>
 					<length>10</length>
-					<format>yyyy/mm/dd</format>
+					<format>yyyy/MM/dd</format>
 				</field>
 				<field>
 					<name>street</name>
