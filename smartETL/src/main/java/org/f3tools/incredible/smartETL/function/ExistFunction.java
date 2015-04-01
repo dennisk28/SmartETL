@@ -32,7 +32,7 @@ public class ExistFunction implements Function
 
 	public String getCanonicalName()
 	{
-		return "Exist";
+		return "EXIST";
 	}
 
 	public TypeValuePair evaluate(final FormulaContext context,
@@ -40,7 +40,7 @@ public class ExistFunction implements Function
 	{
 		final int parameterCount = parameters.getParameterCount();
 		
-		if (parameterCount < 3)
+		if (parameterCount < 2)
 		{
 			throw EvaluationException
 					.getInstance(LibFormulaErrorValue.ERROR_ARGUMENTS_VALUE);
