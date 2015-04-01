@@ -241,7 +241,7 @@ public class Join extends AbstractStep
 					rightKeyIdx, rightKeyIdx);
 			if (compare1 == 0 || compare2 == 0) // Duplicate keys
 			{
-				if (leftRow == null)
+				if (leftRows == null)
 					leftRows = new ArrayList<DataRow>();
 				else
 					leftRows.clear();
