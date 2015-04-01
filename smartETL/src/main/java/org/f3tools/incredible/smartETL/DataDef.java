@@ -178,6 +178,8 @@ public class DataDef
 	 */
 	public Object getFieldValue(int index, String value) throws ETLException
 	{
+		if (value == null) return null;
+		
 		if (index >= this.allFields.size()) 
 		{
 			throw new ETLException("index " + index + " is out of bound!");
