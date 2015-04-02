@@ -61,7 +61,7 @@ public class Context
 	 */
 	public void addVariable(String varName, Variable var)
 	{
-		this.variables.put(varName, var);
+		this.variables.put(varName.toUpperCase(), var);
 	}
 	
 	public Object eval(String formula) throws FormulaException
@@ -71,19 +71,21 @@ public class Context
 	
 	public Object resolveVariable(String varName) throws EvaluationException
 	{
-		if (hasVariable(varName)) return this.getVariableValue(varName);
+		String ucaseVarName = varName.toUpperCase();
 		
-		int dotPos = varName.indexOf(".");
+		if (hasVariable(ucaseVarName)) return this.getVariableValue(ucaseVarName);
+		
+		int dotPos = ucaseVarName.indexOf(".");
 		String prefix = null;
 		String realVarName = null;
 		
 		if (dotPos > 0)
 		{
-			prefix = varName.substring(0,  dotPos);
-			realVarName = varName.substring(dotPos + 1);
+			prefix = ucaseVarName.substring(0,  dotPos);
+			realVarName = ucaseVarName.substring(dotPos + 1);
 		}
 		else
-			realVarName = varName;
+			realVarName = ucaseVarName;
 		
 		if (realVarName == null) 
 		{
@@ -125,26 +127,30 @@ public class Context
 	
 	public boolean hasVariable(String varName)
 	{
-		Variable var = this.variables.get(varName);
+		String ucaseVarName = varName.toUpperCase();
+		
+		Variable var = this.variables.get(ucaseVarName);
 		
 		if (var != null)
 			return true;
 		else if (this.parent != null)
-			return this.parent.hasVariable(varName);
+			return this.parent.hasVariable(ucaseVarName);
 		else
 			return false;
 	}
 	
 	public Object getVariableValue(String varName)
 	{
-		Variable var = this.variables.get(varName);
+		String ucaseVarName = varName.toUpperCase();
+		
+		Variable var = this.variables.get(ucaseVarName);
 		
 		if (var != null)
 			return var.getValue();
 		else
 		{
 			if (this.parent != null) 
-				return this.parent.getVariableValue(varName);
+				return this.parent.getVariableValue(ucaseVarName);
 			else
 				return null;
 		}
@@ -152,11 +158,13 @@ public class Context
 	
 	public void setVariable(String varName, Object value)
 	{
-		Variable var = this.variables.get(varName);
+		String ucaseVarName = varName.toUpperCase();
+
+		Variable var = this.variables.get(ucaseVarName);
 		
 		if (var == null)
 		{
-			var = new Variable(varName);
+			var = new Variable(ucaseVarName);
 			var.setValue(value);
 		}
 	}
