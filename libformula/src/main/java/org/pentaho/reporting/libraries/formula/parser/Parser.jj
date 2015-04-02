@@ -230,8 +230,8 @@ LValue getLValue ():
     | value = <UNSIGNED_INTEGER> { retval = new StaticValue (new BigDecimal (value.image), NumberType.GENERIC_NUMBER, createPosition(value)); }
     | value = <NULL> { retval = new StaticValue (null, createPosition(value)); }
     | <L_BRACE> { retval = parseArray(); } <R_BRACE>
-    | LOOKAHEAD(2) value = <IDENTIFIER> <L_PAREN> { retval = parseFunction(value.image, createPosition(value)); } <R_PAREN>
-    | value = <IDENTIFIER> { retval = new ContextLookup (value.image, createPosition(value)); }
+    | value = <IDENTIFIER> ((<L_PAREN> { retval = parseFunction(value.image, createPosition(value)); } <R_PAREN>)|
+              { retval = new ContextLookup (value.image, createPosition(value)); })
     | <L_PAREN> { retval = getExpression (); } <R_PAREN>
     {
       if (retval instanceof Term == false)
