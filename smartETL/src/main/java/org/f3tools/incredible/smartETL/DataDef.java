@@ -195,7 +195,10 @@ public class DataDef
 			{
 				return value;
 			}
-			else if (fldType.equalsIgnoreCase("Integer"))
+	
+			if (value.trim().equalsIgnoreCase("")) return null;
+			
+			if (fldType.equalsIgnoreCase("Integer"))
 			{
 				return Integer.valueOf(value.trim());
 			}
@@ -229,6 +232,7 @@ public class DataDef
 	public String formatField(int index, Object value) throws ETLException
 	{
 		if (value == null) return "";
+		if (value instanceof String) return (String)value;
 		
 		if (index >= this.allFields.size()) 
 		{
