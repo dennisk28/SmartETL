@@ -1,13 +1,34 @@
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
 # java
 
 *.class
 *.jar
 *.war
 target/
+
+
+# IDEs
+# =========================
+# Eclipse
+# -------------------------
+.classpath
+.project
+.settings/
+
+# =========================
+# IntelljIDEA
+# -------------------------
+.idea/
+*.iml
+
+# =========================
+# Operating System Files
+# =========================
+
+# Windows
+# -------------------------
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
 
 # Folder config file
 Desktop.ini
@@ -24,12 +45,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# =========================
-# Operating System Files
-# =========================
 
 # OSX
-# =========================
+# -------------------------
 
 .DS_Store
 .AppleDouble
@@ -48,3 +66,4 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
