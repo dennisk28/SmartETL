@@ -39,10 +39,10 @@ Nice features:
 7. You can define variables in smart trans step. you can use both input data, variables, and output data define output mapping rules
 
 # Log
-2015/3/21
 
-1. Formula tag is supported now
-2. Two new tools are created. GenJobDef can generate job definition xml from an excel spreasheet. GrammarCheck can find out grammar errors in Excel mapping formulas.
+2015/04/16
+
+Fixed a bug now variables are case insensitive
 
 2015/3/30
 
@@ -52,3 +52,8 @@ Nice features:
 4. Fixed a bug in PrefixTerm and PostfixTerm which didn't have initialize methods
 5. Removed square bracket for variables
 6. Changed function delimiter from ; to ,
+
+2015/3/21
+
+1. Formula tag is supported now
+2. Two new tools are created. GenJobDef can generate job definition xml from an excel spreasheet. GrammarCheck can find out grammar errors in Excel mapping formulas.
