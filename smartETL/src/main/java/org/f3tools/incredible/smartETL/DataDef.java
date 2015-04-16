@@ -46,7 +46,7 @@ public class DataDef
 							Const.toInt(XMLUtl.getTagValue(node, "length"), 0),
 							XMLUtl.getTagValue(node, "format"));
 
-					this.localfields.add(field.getName(), field);
+					this.localfields.add(field.getName().toUpperCase(), field);
 				}
 			}
 		}
@@ -61,7 +61,7 @@ public class DataDef
 			{
 				for (Node fieldNode : fieldNodeList)
 				{
-					this.excludedFields.add(XMLUtl.getNodeValue(fieldNode));
+					this.excludedFields.add(XMLUtl.getNodeValue(fieldNode).toUpperCase());
 				}
 			}
 		}
@@ -95,9 +95,9 @@ public class DataDef
 
 	public void removeField(String fieldName)
 	{
-		if (this.excludedFields.indexOf(fieldName) < 0)
+		if (this.excludedFields.indexOf(fieldName.toUpperCase()) < 0)
 		{
-			excludedFields.add(fieldName);
+			excludedFields.add(fieldName.toUpperCase());
 		}
 		
 		retrieveAllFields();
@@ -117,7 +117,7 @@ public class DataDef
 		for (int i = 0, size = src.size(); i < size; i++)
 		{
 			Field fld = src.get(i);
-			dest.add(fld.name, fld);
+			dest.add(fld.name.toUpperCase(), fld);
 		}
 	}
 	
@@ -294,7 +294,7 @@ public class DataDef
 	
 	public int getFieldIndex(String fieldName)
 	{
-		return this.allFields.indexOf(fieldName);
+		return this.allFields.indexOf(fieldName.toUpperCase());
 	}
 	
     public static class Field {
