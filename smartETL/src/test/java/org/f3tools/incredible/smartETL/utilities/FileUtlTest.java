@@ -15,9 +15,9 @@ public class FileUtlTest extends TestCase
 	{
 
 		
-		File[] files = FileUtl.findFiles("c:/temp/*.txt");
+		//File[] files = FileUtl.findFiles("c:/temp/*.txt");
 		
-		for (int i = 0; i < files.length; i++)
-			System.out.println(files[i].getAbsolutePath());
+		//for (int i = 0; i < files.length; i++)
+			//System.out.println(files[i].getAbsolutePath());
 	}
 }
