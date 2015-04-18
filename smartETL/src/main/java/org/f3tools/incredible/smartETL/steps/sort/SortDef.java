@@ -63,8 +63,8 @@ public class SortDef extends StepDef
 		this.prefix = XMLUtl.getTagValue(defNode, "prefix");
 		this.sortsize = Const.toInt(XMLUtl.getTagValue(defNode, "sortsize"), DEFAULT_SORT_SIZE);
 		this.freememory = Const.toInt(XMLUtl.getTagValue(defNode, "freememory"), -1);
-		this.compress = Const.toBoolean(XMLUtl.getTagValue(defNode, "compress"));
-		this.uniquerows = Const.toBoolean(XMLUtl.getTagValue(defNode, "uniquerows"));
+		this.compress = Boolean.valueOf(XMLUtl.getTagValue(defNode, "compress"));
+		this.uniquerows = Boolean.valueOf(XMLUtl.getTagValue(defNode, "uniquerows"));
 		
 		Node fieldsNode = XMLUtl.getSubNode(defNode, "fields");
 		
@@ -83,9 +83,9 @@ public class SortDef extends StepDef
 			
 			SortField field = new SortField(
 					XMLUtl.getTagValue(node, "name"),
-					Const.toBoolean(XMLUtl.getTagValue(defNode, "ascending")),
-					Const.toBoolean(XMLUtl.getTagValue(defNode, "casesensitive")),
-					Const.toBoolean(XMLUtl.getTagValue(defNode, "presorted")));
+					Boolean.valueOf(XMLUtl.getTagValue(defNode, "ascending")),
+					Boolean.valueOf(XMLUtl.getTagValue(defNode, "casesensitive")),
+					Boolean.valueOf(XMLUtl.getTagValue(defNode, "presorted")));
 
 			fields[i] = field;
 		}
