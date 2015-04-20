@@ -2,8 +2,6 @@
 
 If you are capable to work on this type of tool and are interested in projects which will use SmartETL, please drop me an email to denniskds@sina.com
 
-SmartETL will be used in several projects with total budget above $50 million. It's created to replace a well known commercial ETL product from a well known big name company. By using this tool, we expect to save at least $500k annual license fee, 70% of ETL developers, increase 60% of productivity and reduce 50% of maintenance cost.
-
 We'll soon hook up this tool with big data platform. It's not just getting data from Hadoop which some commercial products already have. We'll plan to run the transformation in hadoop/spark environment so in theory the potential performance gain is much higher than existing commercial products. 
 
 The DSL, which makes this tool "SMART", leverages an open source formula engine and I have made lots of change to it. It's only a temporary solution. We are working on a much more clean and powerful DSL at the moment which will be used in the near future.
