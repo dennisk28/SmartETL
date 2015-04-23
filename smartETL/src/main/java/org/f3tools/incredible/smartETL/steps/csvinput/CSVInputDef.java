@@ -66,7 +66,7 @@ public class CSVInputDef extends StepDef
 		String hasTitle = XMLUtl.getTagValue(defNode, "title");
 		if (hasTitle != null)
 		{
-			this.hasTitle = Const.toBoolean(hasTitle);
+			this.hasTitle = Boolean.valueOf(hasTitle);
 		}
 		
 		this.dataDefRef = XMLUtl.getTagValueWithAttribute(defNode, "datadef", "ref");
